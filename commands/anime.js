@@ -3,10 +3,10 @@ const cheerio = require('cheerio');
 const RichEmbed = require('discord.js').RichEmbed;
 
 module.exports = {
-	name: 'anime',
-	description: 'Generate random anime',
-	execute(message, args) {
-		const MIN = 0;
+  name: 'anime',
+  description: 'Generate random anime',
+  execute(message, args) {
+    const MIN = 0;
     const MAX = 1270;
     const randNum = Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
 
@@ -61,5 +61,5 @@ module.exports = {
 
       return message.channel.send(embeddedDefinition);
     });
-	},
+  },
 };

@@ -1,10 +1,10 @@
 const request = require('request');
 
 module.exports = {
-	name: 'question',
-	description: 'Ask anything: n.question who are you?',
-	async execute(message, args) {
-		const question = message.content.slice(11);
+  name: 'question',
+  description: 'Ask anything: n.question who are you?',
+  async execute(message, args) {
+    const question = message.content.slice(11);
     const uri = `https://api.wolframalpha.com/v1/result?i=${encodeURIComponent(
       question
     )}&appid=${process.env.WOLFRAM_APPID}`;
@@ -23,5 +23,5 @@ module.exports = {
         message.channel.send(result);
       }
     });
-	},
+  },
 };

@@ -1,10 +1,10 @@
 const fetch = require('node-fetch');
 
 module.exports = {
-	name: 'bored',
-	description: 'A command when you are bored',
-	async execute(message, args) {
-		const json = await fetch(`https://www.boredapi.com/api/activity`)
+  name: 'bored',
+  description: 'A command when you are bored',
+  async execute(message, args) {
+    const json = await fetch(`https://www.boredapi.com/api/activity`)
       .then(response => response.json())
       .catch(console.error);
 
@@ -13,5 +13,5 @@ module.exports = {
     } else {
       message.channel.send('Error! try again.');
     }
-	},
+  },
 };

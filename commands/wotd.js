@@ -11,10 +11,10 @@ let italicWordsDidYouKnow = [];
 let italicWordsExamples = [];
 
 module.exports = {
-	name: 'wotd',
-	description: 'Get The Word of The Day',
-	execute(message, args) {
-		request(
+  name: 'wotd',
+  description: 'Get The Word of The Day',
+  execute(message, args) {
+    request(
       'https://www.merriam-webster.com/word-of-the-day',
       (error, response, data) => {
         const $ = cheerio.load(data);
@@ -136,5 +136,5 @@ ${newItalicWordsDidYouKnow}
 `);
       }
     );
-	},
+  },
 };

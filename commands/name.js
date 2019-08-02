@@ -1,10 +1,10 @@
 const fetch = require('node-fetch');
 
 module.exports = {
-	name: 'name',
-	description: 'Generate a random command',
-	async execute(message, args) {
-		const json = await fetch(`https://uinames.com/api`)
+  name: 'name',
+  description: 'Generate a random command',
+  async execute(message, args) {
+    const json = await fetch(`https://uinames.com/api`)
       .then(response => response.json())
       .catch(console.error);
 
@@ -15,5 +15,5 @@ module.exports = {
     } else {
       message.channel.send('Error! try again.');
     }
-	},
+  },
 };

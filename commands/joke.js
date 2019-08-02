@@ -1,9 +1,9 @@
 const fetch = require('node-fetch');
 
 module.exports = {
-	name: 'joke',
-	description: 'Generate a random joke',
-	async execute(message, args) {
+  name: 'joke',
+  description: 'Generate a random joke',
+  async execute(message, args) {
     const json = await fetch(
       'https://official-joke-api.appspot.com/random_joke'
     )
@@ -12,5 +12,5 @@ module.exports = {
 
     message.channel.send(`"${json.setup}"
 || ${json.punchline} ||`);
-	},
+  },
 };

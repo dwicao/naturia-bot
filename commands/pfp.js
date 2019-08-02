@@ -2,10 +2,10 @@ const request = require('request');
 const cheerio = require('cheerio');
 
 module.exports = {
-	name: 'pfp',
-	description: 'Generate random profile picture',
-	execute(message, args) {
-		request('https://picrew.me', (error, response, data) => {
+  name: 'pfp',
+  description: 'Generate random profile picture',
+  execute(message, args) {
+    request('https://picrew.me', (error, response, data) => {
       const $ = cheerio.load(data);
 
       const imageSource = $(
@@ -20,5 +20,5 @@ module.exports = {
 
       return message.channel.send('Fetching Error! Please Try Again.');
     });
-	},
+  },
 };

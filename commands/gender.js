@@ -1,10 +1,10 @@
 const fetch = require('node-fetch');
 
 module.exports = {
-	name: 'gender',
-	description: 'Check gender from name: n.gender john',
-	async execute(message, args) {
-		const firstName = message.content.split(' ')[1];
+  name: 'gender',
+  description: 'Check gender from name: n.gender john',
+  async execute(message, args) {
+    const firstName = message.content.split(' ')[1];
     const fullName = message.content.slice(9);
 
     const json = await fetch(`https://api.genderize.io/?name=${firstName}`)
@@ -24,5 +24,5 @@ module.exports = {
     } else {
       message.channel.send(json.gender ? genderMessage : unknownMessage);
     }
-	},
+  },
 };
