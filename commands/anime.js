@@ -1,6 +1,6 @@
 const request = require('request');
 const cheerio = require('cheerio');
-const RichEmbed = require('discord.js').RichEmbed;
+const {RichEmbed} = require('discord.js');
 
 module.exports = {
   name: 'anime',
@@ -49,7 +49,7 @@ module.exports = {
       const renderDescription = () => {
         const maxLength = 1024;
         return description.length > maxLength
-          ? description.substring(0, maxLength - 3) + '...'
+          ? `${description.substring(0, maxLength - 3)  }...`
           : description;
       };
 
@@ -59,7 +59,7 @@ module.exports = {
         .addField(TITLE, renderMainSection(), true)
         .addField('Description', renderDescription(), true);
 
-      return message.channel.send(embeddedDefinition);
+      message.channel.send(embeddedDefinition);
     });
   },
 };

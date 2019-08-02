@@ -4,11 +4,11 @@ const cheerio = require('cheerio');
 let WOTDTitle = '';
 let attribute = '';
 let syllables = '';
-let prounciation = [];
-let definitionAndFacts = [];
-let exampleWords = [];
-let italicWordsDidYouKnow = [];
-let italicWordsExamples = [];
+const prounciation = [];
+const definitionAndFacts = [];
+const exampleWords = [];
+const italicWordsDidYouKnow = [];
+const italicWordsExamples = [];
 
 module.exports = {
   name: 'wotd',

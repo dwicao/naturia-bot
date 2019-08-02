@@ -18,7 +18,7 @@ module.exports = {
         });
       }
 
-      return message.channel.send('Fetching Error! Please Try Again.');
+      message.channel.send('Fetching Error! Please Try Again.');
     });
   },
 };
