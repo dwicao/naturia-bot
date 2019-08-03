@@ -1,12 +1,12 @@
-require('dotenv').config();
-const fs = require('fs');
-const Discord = require('discord.js');
-const http = require('http');
-const express = require('express');
-const messageHandler = require('./messageHandler');
+require("dotenv").config();
+const fs = require("fs");
+const Discord = require("discord.js");
+const http = require("http");
+const express = require("express");
+const messageHandler = require("./messageHandler");
 const app = express();
 
-app.get('/', (request, response) => {
+app.get("/", (request, response) => {
   response.sendStatus(200);
 });
 
@@ -20,8 +20,8 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 const commandFiles = fs
-  .readdirSync('./commands')
-  .filter(file => file.endsWith('.js'));
+  .readdirSync("./commands")
+  .filter(file => file.endsWith(".js"));
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
@@ -30,12 +30,12 @@ for (const file of commandFiles) {
 
 client.login(process.env.TOKEN);
 
-client.on('ready', function(evt) {
-  console.log('Connected');
+client.on("ready", function(evt) {
+  console.log("Connected");
   console.log(`Logged in as: ${client.user.tag}`);
-  client.user.setActivity('n.help', {type: 'LISTENING'});
+  client.user.setActivity("n.help", { type: "LISTENING" });
 });
 
-client.on('message', message => {
+client.on("message", message => {
   messageHandler(client, message);
 });

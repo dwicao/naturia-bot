@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "lint": "eslint --fix ."
+    "test": "eslint --ignore-path .gitignore .",
+    "lint": "eslint --fix .",
+    "eslint-check": "eslint --print-config path/to/main.js | eslint-config-prettier-check"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +25,27 @@
   "devDependencies": {
     "dotenv": "^8.0.0",
     "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-node": "^9.1.0",
-    "nodemon": "^1.19.1"
+    "eslint-plugin-promise": "^4.2.1",
+    "husky": "^3.0.2",
+    "lint-staged": "^9.2.1",
+    "nodemon": "^1.19.1",
+    "prettier": "1.18.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{js,css,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
