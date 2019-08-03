@@ -83,7 +83,7 @@ client.on('message', async message => {
   if (!correctPrefix || !command || message.author.id === botId) return;
 
   if (command.devOnly && message.author.id !== authorId) {
-    return message.reply('Only the developer can execute that command!');
+    return message.reply('Only the administrator can execute that command!');
   }
 
   if (command.guildOnly && message.channel.type !== 'text') {

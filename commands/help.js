@@ -41,6 +41,8 @@ This bot is open source, you can contribute at [here](https://github.com/dwicao/
 
     data.push(`**Name:** ${command.name}`);
 
+    if (command.devOnly)
+      data.push(`**Note:** Only the administrators can execute this command`);
     if (command.aliases)
       data.push(`**Aliases:** ${command.aliases.join(', ')}`);
     if (command.description)
