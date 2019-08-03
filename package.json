@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "ENV=production node index.js",
+    "dev": "ENV=development nodemon index.js",
     "test": "eslint --ignore-path .gitignore .",
     "lint": "eslint --fix .",
     "eslint-check": "eslint --print-config path/to/main.js | eslint-config-prettier-check"

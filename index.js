@@ -1,10 +1,9 @@
 require("dotenv").config();
-const path = require("path");
-const fs = require("fs");
 const Discord = require("discord.js");
 const http = require("http");
 const express = require("express");
 const messageHandler = require("./messageHandler");
+const { getPath, setActivity } = require("./utils");
 const app = express();
 
 app.get("/", (request, response) => {
@@ -17,28 +16,10 @@ setInterval(() => {
   http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
 }, 280000);
 
+const commandFiles = getPath("./commands");
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.commandPaths = new Discord.Collection();
-
-const getPath = dir => {
-  const result = [];
-
-  const files = [dir];
-  do {
-    const filepath = files.pop();
-    const stat = fs.lstatSync(filepath);
-    if (stat.isDirectory()) {
-      fs.readdirSync(filepath).forEach(f => files.push(path.join(filepath, f)));
-    } else if (stat.isFile()) {
-      result.push(path.relative(dir, filepath));
-    }
-  } while (files.length !== 0);
-
-  return result;
-};
-
-const commandFiles = getPath("./commands");
 
 for (const filePath of commandFiles) {
   const command = require(`./commands/${filePath}`);
@@ -48,10 +29,9 @@ for (const filePath of commandFiles) {
 
 client.login(process.env.TOKEN);
 
-client.on("ready", function(evt) {
-  console.log("Connected");
+client.on("ready", () => {
   console.log(`Logged in as: ${client.user.tag}`);
-  client.user.setActivity("n.help", { type: "LISTENING" });
+  setActivity(client);
 });
 
 client.on("message", message => {
