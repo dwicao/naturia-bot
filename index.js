@@ -3,9 +3,19 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const http = require('http');
 const express = require('express');
+const config = require('./config');
 const app = express();
 
-// Initialize Discord Bot
+app.get('/', (request, response) => {
+  response.sendStatus(200);
+});
+
+app.listen(process.env.PORT);
+
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
+
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
@@ -18,44 +28,20 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-const PREFIX = 'n.';
-let isEnd = false;
-let _timer;
-const timeToWait = 3000; // 20 seconds
-
-app.get('/', (request, response) => {
-  response.sendStatus(200);
-});
-
-app.listen(process.env.PORT);
-
-setInterval(() => {
-  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-}, 280000);
-
-// Turn bot off (destroy), then turn it back on
 const resetBot = message => {
   console.log('Restarting...');
-  isEnd = !isEnd;
-  clearTimeout(_timer);
   message.channel
-    .send('phew')
-    .then(() => message.delete(timeToWait))
+    .send('Restarting...')
+    .then(() => message.delete())
     .then(msg => client.destroy())
     .then(() => client.login(process.env.TOKEN))
     .then(() => {
       console.log(`Logged in as ${client.user.tag}!`);
       console.log('Ready!');
-      message.channel.send(`done`);
+      message.delete();
+      message.channel.send(`Restarted succesfully!`);
     })
     .catch(console.error);
-};
-
-// Stop the timer
-const stopBot = message => {
-  isEnd = !isEnd;
-  clearTimeout(_timer);
-  message.delete(timeToWait).catch(console.error);
 };
 
 client.login(process.env.TOKEN);
@@ -63,34 +49,50 @@ client.login(process.env.TOKEN);
 client.on('ready', function(evt) {
   console.log('Connected');
   console.log(`Logged in as: ${client.user.tag}`);
+  client.user.setActivity('Maintenance Mode', {type: 'PLAYING'});
 });
 
 client.on('message', async message => {
   const args = message.content
-    .slice(PREFIX.length)
+    .slice(config.prefix.length)
     .trim()
     .split(/ +/g);
-  const command = args.shift().toLowerCase();
+  const commandName = args.shift().toLowerCase();
 
-  if (command === 'reset' && message.author.id === '442830299781529610') {
+  if (commandName === 'reset' && message.author.id === config.authorId) {
     resetBot(message);
   }
 
-  if (command === 'say' && message.author.id === '442830299781529610') {
+  if (commandName === 'say' && message.author.id === config.authorId) {
     message.delete();
-    message.channel.send(message.content.slice(6));
+    return message.channel.send(message.content.slice(6));
   }
 
-  if (command == 'stop' && message.author.id === '442830299781529610') {
-    stopBot(message);
+  if (!client.commands.has(commandName) || message.author.id === config.botId)
+    return;
+
+  const command = client.commands.get(commandName);
+
+  if (command.dev && message.author.id !== config.authorId) {
+    return message.reply('Only the developer can execute that command!');
   }
 
-  if (!client.commands.has(command)) return;
+  if (command.args && !args.length) {
+    let reply = `You didn't provide any arguments, ${message.author}!`;
+
+    if (command.usage) {
+      reply += `\nThe proper usage would be: \`${config.prefix}${
+        command.name
+      } ${command.usage}\``;
+    }
+
+    return message.channel.send(reply);
+  }
 
   try {
-    client.commands.get(command).execute(message, args);
+    command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply('there was an error trying to execute that command!');
+    message.reply('There was an error trying to execute that command!');
   }
 });

@@ -13,6 +13,7 @@ const italicWordsExamples = [];
 module.exports = {
   name: 'wotd',
   description: 'Get The Word of The Day',
+  devOnly: true,
   execute(message, args) {
     request(
       'https://www.merriam-webster.com/word-of-the-day',

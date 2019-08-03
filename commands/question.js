@@ -2,7 +2,9 @@ const request = require('request');
 
 module.exports = {
   name: 'question',
-  description: 'Ask anything: n.question who are you?',
+  description: 'Ask about anything',
+  args: true,
+  usage: 'who are you?',
   async execute(message, args) {
     const question = message.content.slice(11);
     const uri = `https://api.wolframalpha.com/v1/result?i=${encodeURIComponent(
