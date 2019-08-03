@@ -4,7 +4,8 @@ module.exports = {
   name: 'question',
   description: 'Ask about anything',
   args: true,
-  usage: 'who are you?',
+  aliases: ['ask'],
+  usage: 'what is human?',
   async execute(message, args) {
     const question = message.content.slice(11);
     const uri = `https://api.wolframalpha.com/v1/result?i=${encodeURIComponent(

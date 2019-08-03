@@ -31,12 +31,16 @@ module.exports = (client, message) => {
   };
 
   if (commandName === 'restart' && message.author.id === authorId) {
-    resetBot(message);
+    return resetBot(message);
   }
 
   if (commandName === 'say' && message.author.id === authorId) {
     message.delete();
     return message.channel.send(message.content.slice(6));
+  }
+
+  if (message.content.includes(`<@${botId}>`)) {
+    return message.channel.send(`My prefix is \`${prefix}\``);
   }
 
   const command =
