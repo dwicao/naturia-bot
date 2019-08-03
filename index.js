@@ -2,7 +2,7 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const http = require("http");
 const express = require("express");
-const messageHandler = require("./messageHandler");
+const messageHandler = require("./handler/messageHandler");
 const { getPath, setActivity } = require("./utils");
 const app = express();
 

@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { prefix, botId, authorId } = require("./config");
+const { prefix, botId, authorId } = require("../config");
 
 const cooldowns = new Discord.Collection();
 

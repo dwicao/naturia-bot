@@ -14,7 +14,7 @@ module.exports = {
 
     if (!args.length) {
       const DESCRIPTION = `You can send \`${prefix}help [command name]\` to get info on a specific command!
-This bot is open source, you can contribute at [here](https://github.com/dwicao/naturia 'https://github.com/dwicao/naturia')`;
+This bot is open-source, you can contribute at [here](https://github.com/dwicao/naturia 'https://github.com/dwicao/naturia')`;
 
       const embed = {
         color: 0x7289da,
