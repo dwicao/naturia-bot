@@ -3,7 +3,7 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const http = require('http');
 const express = require('express');
-const config = require('./config');
+const {prefix, botId, authorId} = require('./config');
 const app = express();
 
 app.get('/', (request, response) => {
@@ -54,17 +54,22 @@ client.on('ready', function(evt) {
 });
 
 client.on('message', async message => {
+  const correctPrefix =
+    message.content.slice(0, prefix.length).toLowerCase() ===
+    prefix.toLowerCase();
+
   const args = message.content
-    .slice(config.prefix.length)
+    .slice(prefix.length)
     .trim()
     .split(/ +/g);
+
   const commandName = args.shift().toLowerCase();
 
-  if (commandName === 'reset' && message.author.id === config.authorId) {
+  if (commandName === 'reset' && message.author.id === authorId) {
     resetBot(message);
   }
 
-  if (commandName === 'say' && message.author.id === config.authorId) {
+  if (commandName === 'say' && message.author.id === authorId) {
     message.delete();
     return message.channel.send(message.content.slice(6));
   }
@@ -75,9 +80,9 @@ client.on('message', async message => {
       cmd => cmd.aliases && cmd.aliases.includes(commandName)
     );
 
-  if (!command || message.author.id === config.botId) return;
+  if (!correctPrefix || !command || message.author.id === botId) return;
 
-  if (command.devOnly && message.author.id !== config.authorId) {
+  if (command.devOnly && message.author.id !== authorId) {
     return message.reply('Only the developer can execute that command!');
   }
 
@@ -89,9 +94,9 @@ client.on('message', async message => {
     let reply = `You didn't provide any arguments, ${message.author}!`;
 
     if (command.usage) {
-      reply += `\nThe proper usage would be: \`${config.prefix}${
-        command.name
-      } ${command.usage}\``;
+      reply += `\nThe proper usage would be: \`${prefix}${command.name} ${
+        command.usage
+      }\``;
     }
 
     return message.channel.send(reply);
