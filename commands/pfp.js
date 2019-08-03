@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 module.exports = {
   name: 'pfp',
   description: 'Generate random profile picture',
+  aliases: ['avatar'],
   execute(message, args) {
     request('https://picrew.me', (error, response, data) => {
       const $ = cheerio.load(data);

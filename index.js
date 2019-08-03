@@ -69,10 +69,13 @@ client.on('message', async message => {
     return message.channel.send(message.content.slice(6));
   }
 
-  if (!client.commands.has(commandName) || message.author.id === config.botId)
-    return;
+  const command =
+    client.commands.get(commandName) ||
+    client.commands.find(
+      cmd => cmd.aliases && cmd.aliases.includes(commandName)
+    );
 
-  const command = client.commands.get(commandName);
+  if (!command || message.author.id === config.botId) return;
 
   if (command.devOnly && message.author.id !== config.authorId) {
     return message.reply('Only the developer can execute that command!');
