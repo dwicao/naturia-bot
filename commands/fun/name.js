@@ -1,8 +1,8 @@
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 
 module.exports = {
-  name: 'name',
-  description: 'Generate a random command',
+  name: "name",
+  description: "Generate a random name",
   async execute(message, args) {
     const json = await fetch(`https://uinames.com/api`)
       .then(response => response.json())
@@ -13,7 +13,7 @@ module.exports = {
         `${json.name} ${json.surname} (${json.gender}) - ${json.region}`
       );
     } else {
-      message.channel.send('Error! try again.');
+      message.channel.send("Error! try again.");
     }
-  },
+  }
 };

@@ -1,10 +1,10 @@
-const request = require('request');
-const cheerio = require('cheerio');
-const {RichEmbed} = require('discord.js');
+const request = require("request");
+const cheerio = require("cheerio");
+const { RichEmbed } = require("discord.js");
 
 module.exports = {
-  name: 'anime',
-  description: 'Generate random anime',
+  name: "anime",
+  description: "Generate a random anime info",
   execute(message, args) {
     const MIN = 0;
     const MAX = 1270;
@@ -15,14 +15,14 @@ module.exports = {
     request(URI, (error, response, data) => {
       const $ = cheerio.load(data);
 
-      const descriptionResult = $('[itemprop=about]')
+      const descriptionResult = $("[itemprop=about]")
         .text()
         .trim();
-      const cleanDescription = descriptionResult.replace('...Read More', '');
-      const description = cleanDescription.replace('Read Less', '');
+      const cleanDescription = descriptionResult.replace("...Read More", "");
+      const description = cleanDescription.replace("Read Less", "");
 
       const detailsCollection = [];
-      const detailsResult = $('.quick-info-container .quick-info li').each(
+      const detailsResult = $(".quick-info-container .quick-info li").each(
         (i, element) => {
           detailsCollection.push($(element).text());
         }
@@ -31,10 +31,10 @@ module.exports = {
 
       const thumbnailSrc = `https://www.randomanime.org/images/shows/${randNum}/anime-l.jpg`;
 
-      const TITLE = 'Random Anime Info';
+      const TITLE = "Random Anime Info";
 
       const renderMainSection = () => {
-        let result = '';
+        let result = "";
         for (
           let indexDetails = 0;
           indexDetails < details.length;
@@ -49,7 +49,7 @@ module.exports = {
       const renderDescription = () => {
         const maxLength = 1024;
         return description.length > maxLength
-          ? `${description.substring(0, maxLength - 3)  }...`
+          ? `${description.substring(0, maxLength - 3)}...`
           : description;
       };
 
@@ -57,9 +57,9 @@ module.exports = {
         .setColor(`RANDOM`)
         .attachFiles([thumbnailSrc])
         .addField(TITLE, renderMainSection(), true)
-        .addField('Description', renderDescription(), true);
+        .addField("Description", renderDescription(), true);
 
       message.channel.send(embeddedDefinition);
     });
-  },
+  }
 };
