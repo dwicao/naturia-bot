@@ -1,7 +1,7 @@
 const { RichEmbed } = require("discord.js");
 const request = require("request");
 const cheerio = require("cheerio");
-const { prefix } = require("../config");
+const { prefix } = require("../../config");
 
 module.exports = {
   name: "jdefinition",
