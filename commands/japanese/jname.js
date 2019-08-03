@@ -27,7 +27,7 @@ module.exports = {
         .trim()
         .match(/\S+/g);
 
-      const _pronounciation = $(".pron")
+      const _pronunciation = $(".pron")
         .text()
         .trim()
         .match(/\S+/g);
@@ -40,13 +40,13 @@ module.exports = {
 
       const kanjiName = _kanjiName.slice(0, 2).join(" ");
 
-      const pronounciation = _pronounciation.slice(0, 2).join(" ");
+      const pronunciation = _pronunciation.slice(0, 2).join(" ");
 
       const embed = new RichEmbed()
         .setColor(`RANDOM`)
         .addField("Name", name, true)
         .addField("Kanji name", kanjiName, true)
-        .addField("Pronunciation", pronounciation, true);
+        .addField("Pronunciation", pronunciation, true);
 
       message.channel.send(embed);
     });
