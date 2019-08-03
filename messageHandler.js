@@ -1,5 +1,5 @@
-const Discord = require('discord.js');
-const {prefix, botId, authorId} = require('./config');
+const Discord = require("discord.js");
+const { prefix, botId, authorId } = require("./config");
 
 const cooldowns = new Discord.Collection();
 
@@ -15,26 +15,26 @@ module.exports = (client, message) => {
 
   const commandName = args.shift().toLowerCase();
 
-  const resetBot = message => {
-    console.log('Restarting...');
+  const resetBot = () => {
+    console.log("Restarting...");
     message.channel
-      .send('Restarting...')
+      .send("Restarting...")
       .then(() => message.delete())
       .then(msg => client.destroy())
       .then(() => client.login(process.env.TOKEN))
       .then(() => {
         console.log(`Logged in as ${client.user.tag}!`);
-        console.log('Ready!');
+        console.log("Ready!");
         message.channel.send(`Restarted succesfully!`);
       })
       .catch(console.error);
   };
 
-  if (commandName === 'restart' && message.author.id === authorId) {
+  if (commandName === "restart" && message.author.id === authorId) {
     return resetBot(message);
   }
 
-  if (commandName === 'say' && message.author.id === authorId) {
+  if (commandName === "say" && message.author.id === authorId) {
     message.delete();
     return message.channel.send(message.content.slice(6));
   }
@@ -52,10 +52,10 @@ module.exports = (client, message) => {
   if (!correctPrefix || !command || message.author.id === botId) return;
 
   if (command.devOnly && message.author.id !== authorId) {
-    return message.reply('Only the administrator can execute that command!');
+    return message.reply("Only the administrator can execute that command!");
   }
 
-  if (command.guildOnly && message.channel.type !== 'text') {
+  if (command.guildOnly && message.channel.type !== "text") {
     return message.reply("I can't execute that command inside DMs!");
   }
 
@@ -63,9 +63,7 @@ module.exports = (client, message) => {
     let reply = `You didn't provide any arguments, ${message.author}!`;
 
     if (command.usage) {
-      reply += `\nThe proper usage would be: \`${prefix}${command.name} ${
-        command.usage
-      }\``;
+      reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
     }
 
     return message.channel.send(reply);
@@ -100,6 +98,6 @@ module.exports = (client, message) => {
     command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply('There was an error trying to execute that command!');
+    message.reply("There was an error trying to execute that command!");
   }
 };

@@ -1,9 +1,9 @@
-const request = require('request');
-const cheerio = require('cheerio');
+const request = require("request");
+const cheerio = require("cheerio");
 
-let WOTDTitle = '';
-let attribute = '';
-let syllables = '';
+let WOTDTitle = "";
+let attribute = "";
+let syllables = "";
 const prounciation = [];
 const definitionAndFacts = [];
 const exampleWords = [];
@@ -11,28 +11,28 @@ const italicWordsDidYouKnow = [];
 const italicWordsExamples = [];
 
 module.exports = {
-  name: 'wotd',
-  description: 'Get The Word of The Day',
+  name: "wotd",
+  description: "Get The Word of The Day",
   devOnly: true,
   execute(message, args) {
     request(
-      'https://www.merriam-webster.com/word-of-the-day',
+      "https://www.merriam-webster.com/word-of-the-day",
       (error, response, data) => {
         const $ = cheerio.load(data);
 
-        WOTDTitle = $('.word-and-pronunciation h1')
+        WOTDTitle = $(".word-and-pronunciation h1")
           .text()
           .trim();
 
-        attribute = $('.main-attr')
+        attribute = $(".main-attr")
           .text()
           .trim();
 
-        syllables = $('.word-syllables')
+        syllables = $(".word-syllables")
           .text()
           .trim();
 
-        $('.wod-definition-container p').each((index, element) => {
+        $(".wod-definition-container p").each((index, element) => {
           const text = $(element)
             .text()
             .trim();
@@ -40,7 +40,7 @@ module.exports = {
           definitionAndFacts.push(text);
         });
 
-        $('.wotd-examples p').each((index, element) => {
+        $(".wotd-examples p").each((index, element) => {
           const text = $(element)
             .text()
             .trim();
@@ -48,7 +48,7 @@ module.exports = {
           exampleWords.push(text);
         });
 
-        $('.left-content-box em').each((index, element) => {
+        $(".left-content-box em").each((index, element) => {
           const text = $(element)
             .text()
             .trim();
@@ -56,7 +56,7 @@ module.exports = {
           italicWordsDidYouKnow.push(text);
         });
 
-        $('.wotd-examples em').each((index, element) => {
+        $(".wotd-examples em").each((index, element) => {
           const text = $(element)
             .text()
             .trim();
@@ -77,7 +77,7 @@ module.exports = {
         const newItalicWordsDidYouKnow = actualDefinitionAndFacts[
           actualDefinitionAndFacts.length - 1
         ]
-          .split(' ')
+          .split(" ")
           .map((text, index) => {
             let newText = text;
 
@@ -89,15 +89,15 @@ module.exports = {
 
             return newText;
           })
-          .join(' ');
+          .join(" ");
 
-        const newItalicWordsExamples = exampleWords.map((sentence, index) => {
+        const newItalicWordsExamples = exampleWords.map(sentence => {
           return sentence
-            .split(' ')
-            .map((text, index) => {
+            .split(" ")
+            .map(text => {
               let newText = text;
 
-              italicWordsExamples.forEach((_text, _index) => {
+              italicWordsExamples.forEach(_text => {
                 if (text === _text) {
                   newText = `_${text}_`;
                 }
@@ -105,17 +105,17 @@ module.exports = {
 
               return newText;
             })
-            .join(' ');
+            .join(" ");
         });
 
-        let formattedWordDefinition = '';
-        wordDefinition.forEach((sentence, index) => {
+        let formattedWordDefinition = "";
+        wordDefinition.forEach(sentence => {
           formattedWordDefinition += `${sentence}
 
 `;
         });
 
-        let formattedWordExamples = '';
+        let formattedWordExamples = "";
         newItalicWordsExamples.forEach((sentence, index) => {
           formattedWordExamples += `${index + 1}. ${sentence}
 
@@ -137,5 +137,5 @@ ${newItalicWordsDidYouKnow}
 `);
       }
     );
-  },
+  }
 };

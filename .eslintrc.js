@@ -32,7 +32,6 @@ module.exports = {
     ],
     "accessor-pairs": "warn",
     "array-callback-return": "error",
-    complexity: "warn",
     "dot-notation": "error",
     eqeqeq: "error",
     "no-empty-function": "error",

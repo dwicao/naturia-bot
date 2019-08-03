@@ -7,7 +7,6 @@
     "start": "ENV=production node index.js",
     "dev": "ENV=development nodemon index.js",
     "test": "eslint --ignore-path .gitignore .",
-    "lint": "eslint --fix .",
     "eslint-check": "eslint --print-config path/to/main.js | eslint-config-prettier-check"
   },
   "keywords": [],
@@ -40,12 +39,12 @@
     }
   },
   "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
     "*.{js,css,json,md}": [
       "prettier --write",
+      "git add"
+    ],
+    "*.js": [
+      "eslint --fix .",
       "git add"
     ]
   }
