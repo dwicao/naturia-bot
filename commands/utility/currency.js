@@ -85,7 +85,11 @@ module.exports = {
 
       const embed = new RichEmbed()
         .setColor(`RANDOM`)
-        .setDescription(`${args.join(" ")} = ${result}`)
+        .setDescription(
+          `${normalizedArgs[0]} ${normalizedArgs[1]} = ${
+            normalizedArgs[3]
+          } ${result}`
+        )
         .setFooter(`Updated: ${exchangeInfo.date}`);
 
       return message.channel.send(embed);
