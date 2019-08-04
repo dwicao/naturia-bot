@@ -22,7 +22,7 @@ This bot is open-source, you can contribute at [here](https://github.com/dwicao/
         description: DESCRIPTION,
         fields: [],
         footer: {
-          text: "Created with ♥ by rein#8888"
+          text: "Made with ♥ by rein#8888"
         }
       };
 

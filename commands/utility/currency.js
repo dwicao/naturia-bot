@@ -86,9 +86,9 @@ module.exports = {
       const embed = new RichEmbed()
         .setColor(`RANDOM`)
         .setDescription(
-          `${normalizedArgs[0]} ${normalizedArgs[1]} = ${
+          `${normalizedArgs[0]} ${normalizedArgs[1]} = ${result} ${
             normalizedArgs[3]
-          } ${result}`
+          }`
         )
         .setFooter(`Updated: ${exchangeInfo.date}`);
 

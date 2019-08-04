@@ -28,7 +28,12 @@ const getPath = dir => {
   return result;
 };
 
+const limitString = (str, maxLength) => {
+  return str.length > maxLength ? `${str.substring(0, maxLength - 3)}...` : str;
+};
+
 module.exports = {
   getPath,
-  setActivity
+  setActivity,
+  limitString
 };

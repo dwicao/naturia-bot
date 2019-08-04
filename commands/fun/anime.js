@@ -1,6 +1,7 @@
 const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
+const { limitString } = require("../../utils");
 
 module.exports = {
   name: "anime",
@@ -46,18 +47,11 @@ module.exports = {
         return result;
       };
 
-      const renderDescription = () => {
-        const maxLength = 1024;
-        return description.length > maxLength
-          ? `${description.substring(0, maxLength - 3)}...`
-          : description;
-      };
-
       const embeddedDefinition = new RichEmbed()
         .setColor(`RANDOM`)
         .attachFiles([thumbnailSrc])
         .addField(TITLE, renderMainSection(), true)
-        .addField("Description", renderDescription(), true);
+        .addField("Description", limitString(description, 1024), true);
 
       message.channel.send(embeddedDefinition);
     });
