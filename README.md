@@ -1,4 +1,4 @@
-<img align="right" width="100" src="https://raw.githubusercontent.com/dwicao/naturia/master/assets/avatar-79016.jpg"/>
+<img align="right" width="100" src="https://raw.githubusercontent.com/dwicao/naturia/master/assets/avatar-79016.png"/>
 
 # Naturia
 
