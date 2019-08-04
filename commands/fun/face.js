@@ -6,6 +6,7 @@ module.exports = {
   description: "Your friend's avatar face",
   args: true,
   usage: "albert einstein",
+  cooldown: 3,
   execute(message, args) {
     const normalizedArgs = encodeURIComponent(args.join(" "));
 
