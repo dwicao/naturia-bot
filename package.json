@@ -20,6 +20,7 @@
     "discord.js": "^11.5.1",
     "express": "^4.16.4",
     "node-fetch": "^2.6.0",
+    "puppeteer": "^1.19.0",
     "request": "^2.88.0",
     "svg2img": "^0.6.1"
   },
