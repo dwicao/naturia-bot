@@ -1,5 +1,6 @@
 const request = require("request");
 const cheerio = require("cheerio");
+const { limitString } = require("../../utils");
 
 let WOTDTitle = "";
 let attribute = "";
@@ -122,19 +123,19 @@ module.exports = {
 `;
         });
 
-        message.channel
-          .send(`- :regional_indicator_w: :regional_indicator_o: :regional_indicator_t: :regional_indicator_d:  -
+        const result = `- :regional_indicator_w: :regional_indicator_o: :regional_indicator_t: :regional_indicator_d:  -
 
 **${WOTDTitle.charAt(0).toUpperCase()}${WOTDTitle.slice(1)}** [**${syllables}**]
 (_${attribute}_)
-
+        
 **Definition**
 ${formattedWordDefinition}
 **Example**
 ${formattedWordExamples}
 **Did you know?**
-${newItalicWordsDidYouKnow}
-`);
+${newItalicWordsDidYouKnow}`;
+
+        message.channel.send(limitString(result, 2000));
       }
     );
   }
