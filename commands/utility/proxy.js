@@ -1,7 +1,8 @@
+const fs = require("fs");
 const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
-const { toMatrix, limitString } = require("../../utils");
+const { toMatrix, getRootDir } = require("../../utils");
 
 module.exports = {
   name: "proxy",
@@ -39,6 +40,27 @@ module.exports = {
           }
         });
       });
+
+      const ip = [];
+      const port = [];
+
+      tempData.forEach((item, index) => {
+        if (index % 8 === 0) {
+          ip.push(item);
+          port.push(tempData[index + 1]);
+        }
+      });
+
+      const ipAndPort = [];
+
+      ip.forEach((item, index) => {
+        ipAndPort.push(`${item}:${port[index]}`);
+      });
+
+      const file = fs.createWriteStream(`${getRootDir()}/private/proxy.txt`);
+      file.on("error", console.error);
+      ipAndPort.forEach(value => file.write(`${value}\n`));
+      file.end();
 
       const embed = new RichEmbed()
         .setColor(`RANDOM`)

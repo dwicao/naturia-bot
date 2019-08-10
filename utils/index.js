@@ -28,6 +28,8 @@ const getPath = dir => {
   return result;
 };
 
+const getRootDir = () => __dirname.substring(0, __dirname.indexOf("/utils"));
+
 const limitString = (str, maxLength) => {
   return str.length > maxLength ? `${str.substring(0, maxLength - 3)}...` : str;
 };
@@ -41,8 +43,16 @@ const toMatrix = (arr, width) =>
     []
   );
 
+const getRandomInt = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 module.exports = {
   getPath,
+  getRootDir,
+  getRandomInt,
   setActivity,
   limitString,
   toMatrix

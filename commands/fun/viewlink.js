@@ -22,12 +22,12 @@ module.exports = {
 
           await page.goto(args[0]);
           await page.screenshot({
-            path: `${getRootDir()}/public/puppeteer.png`
+            path: `${getRootDir()}/private/puppeteer.png`
           });
           await browser.close();
 
           message.channel.send({
-            files: [{ attachment: `${getRootDir()}/public/puppeteer.png` }]
+            files: [{ attachment: `${getRootDir()}/private/puppeteer.png` }]
           });
 
           msg.delete();
