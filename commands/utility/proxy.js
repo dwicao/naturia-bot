@@ -57,7 +57,7 @@ module.exports = {
         ipAndPort.push(`${item}:${port[index]}`);
       });
 
-      const file = fs.createWriteStream(`${getRootDir()}/private/proxy.txt`);
+      const file = fs.createWriteStream(`${getRootDir()}/public/proxy.txt`);
       file.on("error", console.error);
       ipAndPort.forEach(value => file.write(`${value}\n`));
       file.end();

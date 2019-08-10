@@ -12,7 +12,7 @@ module.exports = {
   execute(message, args) {
     let randomProxy = "";
 
-    fs.readFile(`${getRootDir()}/private/proxy.txt`, "utf8", (err, data) => {
+    fs.readFile(`${getRootDir()}/public/proxy.txt`, "utf8", (err, data) => {
       if (err) console.error(err);
 
       const splitted = data.toString().split("\n");
@@ -32,7 +32,7 @@ module.exports = {
       });
 
       await page.screenshot({
-        path: `${rootDir}/private/puppeteer.jpg`,
+        path: `${rootDir}/public/puppeteer.jpg`,
         type: "jpeg"
       });
 
@@ -41,7 +41,7 @@ module.exports = {
       await browser.close();
 
       return message.channel.send("", {
-        files: [`${rootDir}/private/puppeteer.jpg`]
+        files: [`${rootDir}/public/puppeteer.jpg`]
       });
     });
   }
