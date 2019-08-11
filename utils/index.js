@@ -65,6 +65,14 @@ const getRandomProxy = () => {
   });
 };
 
+const setRandomProxies = proxyCmd => {
+  try {
+    proxyCmd.execute(null, null, { shouldSendMessage: false });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const getHeaders = () => {
   return {
     "User-Agent":
@@ -78,6 +86,7 @@ module.exports = {
   getRandomInt,
   getRandomProxy,
   setActivity,
+  setRandomProxies,
   limitString,
   getHeaders,
   toMatrix

@@ -7,13 +7,13 @@ const { toMatrix, getRootDir, getHeaders } = require("../../utils");
 module.exports = {
   name: "proxy",
   description: "Get a list of random 20 SSL Proxies",
-  execute(message, args) {
-    const options = {
+  execute(message, args, options) {
+    const reqOptions = {
       url: "https://www.sslproxies.org",
       headers: getHeaders()
     };
 
-    request(options, (error, response, data) => {
+    request(reqOptions, (error, response, data) => {
       const $ = cheerio.load(data);
 
       const tempData = [];
@@ -73,7 +73,9 @@ module.exports = {
         .addField("<IP> <PORT> <COUNTRY>", result, true)
         .setFooter(`Updated ${matrixedData[0][matrixedData[0].length - 1]}`);
 
-      message.channel.send(embed);
+      if (options.shouldSendMessage) {
+        message.channel.send(embed);
+      }
     });
   }
 };
