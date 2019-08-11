@@ -1,7 +1,7 @@
 const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
-const { limitString } = require("../../utils");
+const { limitString, getHeaders } = require("../../utils");
 
 module.exports = {
   name: "anime",
@@ -11,9 +11,12 @@ module.exports = {
     const MAX = 1270;
     const randNum = Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
 
-    const URI = `https://www.randomanime.org/shows/${randNum}/`;
+    const options = {
+      url: `https://www.randomanime.org/shows/${randNum}/`,
+      headers: getHeaders()
+    };
 
-    request(URI, (error, response, data) => {
+    request(options, (error, response, data) => {
       const $ = cheerio.load(data);
 
       const descriptionResult = $("[itemprop=about]")

@@ -1,6 +1,6 @@
 const request = require("request");
 const cheerio = require("cheerio");
-const { limitString } = require("../../utils");
+const { limitString, getHeaders } = require("../../utils");
 
 let WOTDTitle = "";
 let attribute = "";
@@ -16,73 +16,92 @@ module.exports = {
   description: "Get The Word of The Day",
   devOnly: true,
   execute(message, args) {
-    request(
-      "https://www.merriam-webster.com/word-of-the-day",
-      (error, response, data) => {
-        const $ = cheerio.load(data);
+    const options = {
+      url: "https://www.merriam-webster.com/word-of-the-day",
+      headers: getHeaders()
+    };
 
-        WOTDTitle = $(".word-and-pronunciation h1")
+    request(options, (error, response, data) => {
+      const $ = cheerio.load(data);
+
+      WOTDTitle = $(".word-and-pronunciation h1")
+        .text()
+        .trim();
+
+      attribute = $(".main-attr")
+        .text()
+        .trim();
+
+      syllables = $(".word-syllables")
+        .text()
+        .trim();
+
+      $(".wod-definition-container p").each((index, element) => {
+        const text = $(element)
           .text()
           .trim();
 
-        attribute = $(".main-attr")
+        definitionAndFacts.push(text);
+      });
+
+      $(".wotd-examples p").each((index, element) => {
+        const text = $(element)
           .text()
           .trim();
 
-        syllables = $(".word-syllables")
+        exampleWords.push(text);
+      });
+
+      $(".left-content-box em").each((index, element) => {
+        const text = $(element)
           .text()
           .trim();
 
-        $(".wod-definition-container p").each((index, element) => {
-          const text = $(element)
-            .text()
-            .trim();
+        italicWordsDidYouKnow.push(text);
+      });
 
-          definitionAndFacts.push(text);
-        });
+      $(".wotd-examples em").each((index, element) => {
+        const text = $(element)
+          .text()
+          .trim();
 
-        $(".wotd-examples p").each((index, element) => {
-          const text = $(element)
-            .text()
-            .trim();
+        italicWordsExamples.push(text);
+      });
 
-          exampleWords.push(text);
-        });
+      const actualDefinitionAndFacts = definitionAndFacts.slice(
+        0,
+        definitionAndFacts.length - 3
+      );
 
-        $(".left-content-box em").each((index, element) => {
-          const text = $(element)
-            .text()
-            .trim();
+      const wordDefinition = definitionAndFacts.slice(
+        0,
+        definitionAndFacts.length - 4
+      );
 
-          italicWordsDidYouKnow.push(text);
-        });
+      const newItalicWordsDidYouKnow = actualDefinitionAndFacts[
+        actualDefinitionAndFacts.length - 1
+      ]
+        .split(" ")
+        .map((text, index) => {
+          let newText = text;
 
-        $(".wotd-examples em").each((index, element) => {
-          const text = $(element)
-            .text()
-            .trim();
+          italicWordsDidYouKnow.forEach((_text, _index) => {
+            if (text === _text) {
+              newText = `_${text}_`;
+            }
+          });
 
-          italicWordsExamples.push(text);
-        });
+          return newText;
+        })
+        .join(" ");
 
-        const actualDefinitionAndFacts = definitionAndFacts.slice(
-          0,
-          definitionAndFacts.length - 3
-        );
-
-        const wordDefinition = definitionAndFacts.slice(
-          0,
-          definitionAndFacts.length - 4
-        );
-
-        const newItalicWordsDidYouKnow = actualDefinitionAndFacts[
-          actualDefinitionAndFacts.length - 1
-        ]
+      const newItalicWordsExamples = exampleWords.map(sentence => {
+        return sentence
           .split(" ")
-          .map((text, index) => {
+          .map(text => {
             let newText = text;
 
-            italicWordsDidYouKnow.forEach((_text, _index) => {
+            italicWordsExamples.forEach(_text => {
               if (text === _text) {
                 newText = `_${text}_`;
               }
@@ -91,39 +110,23 @@ module.exports = {
             return newText;
           })
           .join(" ");
+      });
 
-        const newItalicWordsExamples = exampleWords.map(sentence => {
-          return sentence
-            .split(" ")
-            .map(text => {
-              let newText = text;
-
-              italicWordsExamples.forEach(_text => {
-                if (text === _text) {
-                  newText = `_${text}_`;
-                }
-              });
-
-              return newText;
-            })
-            .join(" ");
-        });
-
-        let formattedWordDefinition = "";
-        wordDefinition.forEach(sentence => {
-          formattedWordDefinition += `${sentence}
+      let formattedWordDefinition = "";
+      wordDefinition.forEach(sentence => {
+        formattedWordDefinition += `${sentence}
 
 `;
-        });
+      });
 
-        let formattedWordExamples = "";
-        newItalicWordsExamples.forEach((sentence, index) => {
-          formattedWordExamples += `${index + 1}. ${sentence}
+      let formattedWordExamples = "";
+      newItalicWordsExamples.forEach((sentence, index) => {
+        formattedWordExamples += `${index + 1}. ${sentence}
 
 `;
-        });
+      });
 
-        const result = `- :regional_indicator_w: :regional_indicator_o: :regional_indicator_t: :regional_indicator_d:  -
+      const result = `- :regional_indicator_w: :regional_indicator_o: :regional_indicator_t: :regional_indicator_d:  -
 
 **${WOTDTitle.charAt(0).toUpperCase()}${WOTDTitle.slice(1)}** [**${syllables}**]
 (_${attribute}_)
@@ -135,8 +138,7 @@ ${formattedWordExamples}
 **Did you know?**
 ${newItalicWordsDidYouKnow}`;
 
-        message.channel.send(limitString(result, 2000));
-      }
-    );
+      message.channel.send(limitString(result, 2000));
+    });
   }
 };

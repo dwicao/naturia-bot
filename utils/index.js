@@ -49,11 +49,19 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+const getHeaders = () => {
+  return {
+    "User-Agent":
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36"
+  };
+};
+
 module.exports = {
   getPath,
   getRootDir,
   getRandomInt,
   setActivity,
   limitString,
+  getHeaders,
   toMatrix
 };

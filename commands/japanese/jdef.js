@@ -2,6 +2,7 @@ const { RichEmbed } = require("discord.js");
 const request = require("request");
 const cheerio = require("cheerio");
 const { prefix } = require("../../config");
+const { getHeaders } = require("../../utils");
 
 module.exports = {
   name: "jdefinition",
@@ -12,9 +13,14 @@ module.exports = {
   async execute(message, args) {
     const _arguments = args.length > 1 ? args.join("%20") : args[0];
 
-    const URI = `http://www.romajidesu.com/dictionary/meaning-of-${_arguments}.html`;
+    const url = `http://www.romajidesu.com/dictionary/meaning-of-${_arguments}.html`;
 
-    request(URI, (error, response, data) => {
+    const options = {
+      url,
+      headers: getHeaders()
+    };
+
+    request(options, (error, response, data) => {
       const $ = cheerio.load(data);
 
       const romajiElements = $(".word_kana")

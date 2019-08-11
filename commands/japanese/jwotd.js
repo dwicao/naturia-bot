@@ -1,14 +1,19 @@
 const { RichEmbed } = require("discord.js");
 const request = require("request");
 const cheerio = require("cheerio");
+const { getHeaders } = require("../../utils");
 
 module.exports = {
   name: "jwotd",
   description: "Japanese Word of The Day",
   devOnly: true,
   execute(message, args) {
-    const URI = "https://www.japanesepod101.com/japanese-phrases";
-    request(URI, (error, response, data) => {
+    const options = {
+      url: "https://www.japanesepod101.com/japanese-phrases",
+      headers: getHeaders()
+    };
+
+    request(options, (error, response, data) => {
       const $ = cheerio.load(data);
 
       const pictureSource = $(".r101-wotd-widget__image").attr("src");

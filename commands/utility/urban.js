@@ -2,7 +2,7 @@ const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
 const { prefix } = require("../../config");
-const { limitString } = require("../../utils");
+const { limitString, getHeaders } = require("../../utils");
 
 module.exports = {
   name: "urban",
@@ -10,11 +10,16 @@ module.exports = {
   args: true,
   usage: `normies`,
   execute(message, args) {
-    const URI = `https://www.urbandictionary.com/define.php?term=${encodeURIComponent(
+    const url = `https://www.urbandictionary.com/define.php?term=${encodeURIComponent(
       args.join(" ")
     )}`;
 
-    request(URI, (error, response, data) => {
+    const options = {
+      url,
+      headers: getHeaders()
+    };
+
+    request(options, (error, response, data) => {
       const $ = cheerio.load(data);
 
       const definition = $(".meaning")

@@ -1,12 +1,18 @@
 const request = require("request");
 const cheerio = require("cheerio");
+const { getHeaders } = require("../../utils");
 
 module.exports = {
   name: "pfp",
   description: "Generate a random profile picture (avatar)",
   aliases: ["avatar"],
   execute(message, args) {
-    request("https://picrew.me", (error, response, data) => {
+    const options = {
+      url: "https://picrew.me",
+      headers: getHeaders()
+    };
+
+    request(options, (error, response, data) => {
       const $ = cheerio.load(data);
 
       const imageSource = $(

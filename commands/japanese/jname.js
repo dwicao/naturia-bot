@@ -2,6 +2,7 @@ const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
 const { prefix } = require("../../config");
+const { getHeaders } = require("../../utils");
 
 module.exports = {
   name: "jname",
@@ -9,12 +10,17 @@ module.exports = {
   args: true,
   usage: `male or ${prefix}jname female`,
   execute(message, args) {
-    const MALE = `https://namegen.jp/en?country=japan&sex=male&firstname=&firstname_cond=fukumu&firstname_rarity=&lastname=&lastname_cond=fukumu&lastname_rarity=`;
-    const FEMALE = `https://namegen.jp/en?country=japan&sex=female&firstname=&firstname_cond=fukumu&firstname_rarity=&lastname=&lastname_cond=fukumu&lastname_rarity=`;
+    const MALE_URL = `https://namegen.jp/en?country=japan&sex=male&firstname=&firstname_cond=fukumu&firstname_rarity=&lastname=&lastname_cond=fukumu&lastname_rarity=`;
+    const FEMALE_URL = `https://namegen.jp/en?country=japan&sex=female&firstname=&firstname_cond=fukumu&firstname_rarity=&lastname=&lastname_cond=fukumu&lastname_rarity=`;
 
-    const URI = args[0] === "female" ? FEMALE : MALE;
+    const url = args[0] === "female" ? FEMALE_URL : MALE_URL;
 
-    request(URI, (error, response, data) => {
+    const options = {
+      url,
+      headers: getHeaders()
+    };
+
+    request(options, (error, response, data) => {
       const $ = cheerio.load(data);
 
       const _name = $(".name")

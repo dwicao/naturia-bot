@@ -2,13 +2,18 @@ const fs = require("fs");
 const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
-const { toMatrix, getRootDir } = require("../../utils");
+const { toMatrix, getRootDir, getHeaders } = require("../../utils");
 
 module.exports = {
   name: "proxy",
   description: "Get a list of random 20 SSL Proxies",
   execute(message, args) {
-    request("https://www.sslproxies.org", (error, response, data) => {
+    const options = {
+      url: "https://www.sslproxies.org",
+      headers: getHeaders()
+    };
+
+    request(options, (error, response, data) => {
       const $ = cheerio.load(data);
 
       const tempData = [];
