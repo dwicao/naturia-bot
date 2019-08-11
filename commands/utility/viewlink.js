@@ -22,7 +22,8 @@ module.exports = {
 
           await page.goto(args[0]);
           await page.screenshot({
-            path: `${getRootDir()}/public/puppeteer.png`
+            path: `${getRootDir()}/public/puppeteer.jpg`,
+            type: "jpeg"
           });
           await browser.close();
 

@@ -49,6 +49,22 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+const getRandomProxy = () => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(`${getRootDir()}/public/proxy.txt`, "utf8", (err, data) => {
+      const splittedData = data.toString().split("\n");
+
+      if (err) {
+        console.error(err);
+
+        resolve(splittedData[0]);
+      }
+
+      resolve(splittedData[getRandomInt(0, splittedData.length)]);
+    });
+  });
+};
+
 const getHeaders = () => {
   return {
     "User-Agent":
@@ -60,6 +76,7 @@ module.exports = {
   getPath,
   getRootDir,
   getRandomInt,
+  getRandomProxy,
   setActivity,
   limitString,
   getHeaders,
