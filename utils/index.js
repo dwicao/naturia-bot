@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const UserAgent = require("user-agents");
 
 const IS_PROD = process.env.ENV === "production";
 
@@ -75,8 +76,7 @@ const setRandomProxies = proxyCmd => {
 
 const getHeaders = () => {
   return {
-    "User-Agent":
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36"
+    "User-Agent": new UserAgent().toString()
   };
 };
 
