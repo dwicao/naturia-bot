@@ -3,6 +3,7 @@ const fs = require("fs");
 const UserAgent = require("user-agents");
 
 const IS_PROD = process.env.ENV === "production";
+const ERROR_MESSAGE = "Error while fetching data! Please Try Again.";
 
 const setActivity = client => {
   if (IS_PROD) {
@@ -66,18 +67,30 @@ const getRandomProxy = () => {
   });
 };
 
-const setRandomProxies = proxyCmd => {
-  try {
-    proxyCmd.execute(null, null, { shouldSendMessage: false });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 const getHeaders = () => {
   return {
     "User-Agent": new UserAgent().toString()
   };
+};
+
+const sendErrorMessage = (message, err) => {
+  if (err) {
+    console.error(err);
+  }
+
+  if (message && message.channel && message.channel.send) {
+    message.channel.send(ERROR_MESSAGE);
+  }
+};
+
+const sendEditErrorMessage = (message, err) => {
+  if (err) {
+    console.error(err);
+  }
+
+  if (message && message.edit) {
+    message.edit(ERROR_MESSAGE);
+  }
 };
 
 module.exports = {
@@ -86,7 +99,8 @@ module.exports = {
   getRandomInt,
   getRandomProxy,
   setActivity,
-  setRandomProxies,
+  sendErrorMessage,
+  sendEditErrorMessage,
   limitString,
   getHeaders,
   toMatrix

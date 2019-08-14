@@ -2,18 +2,25 @@ const fs = require("fs");
 const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
-const { toMatrix, getRootDir, getHeaders } = require("../../utils");
+const {
+  toMatrix,
+  getRootDir,
+  getHeaders,
+  sendErrorMessage
+} = require("../../utils");
 
-module.exports = {
-  name: "proxy",
-  description: "Get a list of random 20 SSL Proxies",
-  execute(message, args, options) {
+const runner = () =>
+  new Promise((resolve, reject) => {
     const reqOptions = {
       url: "https://www.sslproxies.org",
       headers: getHeaders()
     };
 
     request(reqOptions, (error, response, data) => {
+      if (error) {
+        reject(error);
+      }
+
       const $ = cheerio.load(data);
 
       const tempData = [];
@@ -25,7 +32,7 @@ module.exports = {
       const matrixedData = toMatrix(tempData, 8);
 
       const LIMIT = 20;
-      let result = "";
+      let content = "";
       let count = 0;
 
       matrixedData.forEach(element => {
@@ -36,11 +43,11 @@ module.exports = {
             const IS_COUNTRY = index === 3;
 
             if (IS_IP_AND_PORT) {
-              result += `${elem} `;
+              content += `${elem} `;
             }
 
             if (IS_COUNTRY) {
-              result += `${elem}\n`;
+              content += `${elem}\n`;
             }
           }
         });
@@ -67,15 +74,26 @@ module.exports = {
       ipAndPort.forEach(value => file.write(`${value}\n`));
       file.end();
 
-      const embed = new RichEmbed()
-        .setColor(`RANDOM`)
-        .setTitle("Random 20 SSL Proxies")
-        .addField("<IP> <PORT> <COUNTRY>", result, true)
-        .setFooter(`Updated ${matrixedData[0][matrixedData[0].length - 1]}`);
-
-      if (options.shouldSendMessage) {
-        message.channel.send(embed);
-      }
+      resolve({ ipAndPort, content });
     });
+  });
+
+module.exports = {
+  runner,
+  name: "proxy",
+  description: "Get a list of random 20 SSL Proxies",
+  execute(message, args) {
+    runner()
+      .then(({ content }) => {
+        const embed = new RichEmbed()
+          .setColor(`RANDOM`)
+          .setTitle("Random 20 SSL Proxies")
+          .addField("<IP> <PORT> <COUNTRY>", content, true);
+
+        message.channel.send(embed);
+      })
+      .catch(err => {
+        sendErrorMessage(message, err);
+      });
   }
 };

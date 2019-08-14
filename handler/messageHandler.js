@@ -95,11 +95,7 @@ module.exports = (client, message) => {
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
   try {
-    const defaultOptions = {
-      shouldSendMessage: true
-    };
-
-    command.execute(message, args, defaultOptions);
+    command.execute(message, args);
   } catch (error) {
     console.error(error);
     message.reply("There was an error trying to execute that command!");

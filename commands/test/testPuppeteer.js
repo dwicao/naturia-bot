@@ -1,13 +1,13 @@
 const puppeteer = require("puppeteer");
-const proxyCmd = require("./proxy");
-const { getRandomProxy, getRootDir, setRandomProxies } = require("../../utils");
+const proxyCmd = require("../utility/proxy");
+const { getRandomProxy, getRootDir, sendEditErrorMessage } = require("../../utils");
 
 module.exports = {
   name: "testPuppeteer",
   devOnly: true,
   aliases: ["tp"],
   execute(message, args) {
-    setRandomProxies(proxyCmd);
+    proxyCmd.runner().then().catch(console.error);
 
     return message.channel.send("Loading...").then(msg => {
       getRandomProxy()
@@ -38,8 +38,7 @@ module.exports = {
           });
         })
         .catch(err => {
-          console.error(err);
-          return msg.edit("Error fetching! Try Again.");
+          sendEditErrorMessage(msg, err)
         });
     });
   }
