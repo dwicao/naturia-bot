@@ -38,7 +38,7 @@ const runner = () =>
       matrixedData.forEach(element => {
         count++;
         element.forEach((elem, index) => {
-          if (count <= LIMIT) {
+          if (count < LIMIT) {
             const IS_IP_AND_PORT = index === 0 || index === 1;
             const IS_COUNTRY = index === 3;
 
