@@ -1,13 +1,15 @@
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
+
+const runner = () =>
+  fetch("https://api.adviceslip.com/advice").then(response => response.json());
 
 module.exports = {
-  name: 'advice',
-  description: 'Generate a random advice',
+  runner,
+  name: "advice",
+  description: "Generate a random advice",
   async execute(message, args) {
-    const json = await fetch('https://api.adviceslip.com/advice')
-      .then(response => response.json())
-      .catch(console.error);
+    const result = await runner;
 
-    message.channel.send(`Advice: "${json.slip.advice}"`);
-  },
+    message.channel.send(`Advice: "${result.slip.advice}"`);
+  }
 };
