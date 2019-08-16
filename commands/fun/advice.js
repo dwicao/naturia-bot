@@ -8,7 +8,7 @@ module.exports = {
   name: "advice",
   description: "Generate a random advice",
   async execute(message, args) {
-    const result = await runner;
+    const result = await runner();
 
     message.channel.send(`Advice: "${result.slip.advice}"`);
   }
