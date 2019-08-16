@@ -1,16 +1,18 @@
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
+
+const runner = () =>
+  fetch("https://official-joke-api.appspot.com/random_joke").then(response =>
+    response.json()
+  );
 
 module.exports = {
-  name: 'joke',
-  description: 'Generate a random joke',
+  runner,
+  name: "joke",
+  description: "Generate a random joke",
   async execute(message, args) {
-    const json = await fetch(
-      'https://official-joke-api.appspot.com/random_joke'
-    )
-      .then(response => response.json())
-      .catch(console.error);
+    const result = await runner();
 
-    message.channel.send(`"${json.setup}"
-|| ${json.punchline} ||`);
-  },
+    message.channel.send(`"${result.setup}"
+|| ${result.punchline} ||`);
+  }
 };
