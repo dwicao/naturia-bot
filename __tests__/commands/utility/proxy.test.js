@@ -1,9 +1,9 @@
 /* eslint-env jest */
 /* eslint-disable promise/catch-or-return */
 
-const { runner } = require("../../../commands/utility/proxy");
+const { runner, name } = require("../../../commands/utility/proxy");
 
-describe("Proxy command", () => {
+describe(`${name} command`, () => {
   test("return correct value", () => {
     const IP_AND_PORT_PATTERN = /^([a-z0-9-]+\.)+[a-z0-9]+:[1-9][0-9]+$/i;
 

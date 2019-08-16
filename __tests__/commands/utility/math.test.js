@@ -1,8 +1,8 @@
 /* eslint-env jest */
 
-const { runner } = require("../../../commands/utility/math");
+const { runner, name } = require("../../../commands/utility/math");
 
-describe("Math command", () => {
+describe(`${name} command`, () => {
   test("return correct value", async () => {
     const INPUT = "8 * 2 (3+7)";
     const EXPECTED_OUTPUT = "160";

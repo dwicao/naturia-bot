@@ -38,7 +38,14 @@ const RATES = [
   "PLN"
 ];
 
+const runner = base =>
+  fetch(`https://api.exchangeratesapi.io/latest?base=${base}`).then(res =>
+    res.json()
+  );
+
 module.exports = {
+  runner,
+  data: RATES,
   name: "currency",
   description: "Foreign exchange rates",
   aliases: ["cur"],
@@ -63,12 +70,7 @@ module.exports = {
         return message.channel.send(embed);
       }
 
-      const exchangeInfo =
-        (await fetch(
-          `https://api.exchangeratesapi.io/latest?base=${normalizedArgs[1]}`
-        )
-          .then(res => res.json())
-          .catch(console.error)) || {};
+      const exchangeInfo = await runner(normalizedArgs[1]);
 
       if (exchangeInfo.error) {
         const embed = new RichEmbed()
