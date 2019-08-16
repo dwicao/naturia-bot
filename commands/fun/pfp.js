@@ -1,12 +1,9 @@
 const request = require("request");
 const cheerio = require("cheerio");
-const { getHeaders } = require("../../utils");
+const { getHeaders, sendErrorMessage } = require("../../utils");
 
-module.exports = {
-  name: "pfp",
-  description: "Generate a random profile picture (avatar)",
-  aliases: ["avatar"],
-  execute(message, args) {
+const runner = () =>
+  new Promise((resolve, reject) => {
     const options = {
       url: "https://picrew.me",
       headers: getHeaders()
@@ -19,13 +16,28 @@ module.exports = {
         ".sitetop_discovery .sitetop_discovery_list_img img"
       ).attr("src");
 
-      if (imageSource) {
-        return message.channel.send("Here is your random profile picture.", {
-          files: [imageSource]
-        });
+      if (error) {
+        reject(error);
+      } else {
+        resolve(imageSource);
       }
-
-      message.channel.send("Fetching Error! Please Try Again.");
     });
+  });
+
+module.exports = {
+  runner,
+  name: "pfp",
+  description: "Generate a random profile picture (avatar)",
+  aliases: ["avatar"],
+  async execute(message, args) {
+    const imageSource = await runner();
+
+    if (imageSource) {
+      return message.channel.send("Here is your random profile picture.", {
+        files: [imageSource]
+      });
+    }
+
+    sendErrorMessage(message);
   }
 };
