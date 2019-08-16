@@ -2,6 +2,9 @@
 /* eslint-disable promise/catch-or-return */
 
 const { runner, name } = require("../../../commands/utility/proxy");
+const { JEST_TIMEOUT } = require("../../../utils");
+
+jest.setTimeout(JEST_TIMEOUT);
 
 describe(`${name} command`, () => {
   test("return correct value", () => {

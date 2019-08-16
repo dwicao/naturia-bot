@@ -93,7 +93,10 @@ const sendEditErrorMessage = (message, err) => {
   }
 };
 
+const JEST_TIMEOUT = 10000;
+
 module.exports = {
+  JEST_TIMEOUT,
   getPath,
   getRootDir,
   getRandomInt,
