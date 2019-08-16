@@ -1,17 +1,21 @@
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
+
+const runner = () =>
+  fetch(`https://www.boredapi.com/api/activity`).then(response =>
+    response.json()
+  );
 
 module.exports = {
-  name: 'bored',
-  description: 'A command when you are bored',
+  runner,
+  name: "bored",
+  description: "A command when you are bored",
   async execute(message, args) {
-    const json = await fetch(`https://www.boredapi.com/api/activity`)
-      .then(response => response.json())
-      .catch(console.error);
+    const result = await runner();
 
-    if (json && json.activity) {
-      message.channel.send(json.activity);
+    if (result && result.activity) {
+      message.channel.send(result.activity);
     } else {
-      message.channel.send('Error! try again.');
+      message.channel.send("Error! try again.");
     }
-  },
+  }
 };
