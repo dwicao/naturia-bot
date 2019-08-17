@@ -1,17 +1,12 @@
 const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
-const { prefix } = require("../../config");
 const { limitString, getHeaders } = require("../../utils");
 
-module.exports = {
-  name: "urban",
-  description: "Search and return Urban Dictionary definition",
-  args: true,
-  usage: `normies`,
-  execute(message, args) {
+const runner = term =>
+  new Promise((resolve, reject) => {
     const url = `https://www.urbandictionary.com/define.php?term=${encodeURIComponent(
-      args.join(" ")
+      term
     )}`;
 
     const options = {
@@ -20,6 +15,10 @@ module.exports = {
     };
 
     request(options, (error, response, data) => {
+      if (error) {
+        reject(error);
+      }
+
       const $ = cheerio.load(data);
 
       const definition = $(".meaning")
@@ -32,13 +31,28 @@ module.exports = {
         .text()
         .trim();
 
-      const embed = new RichEmbed()
-        .setColor(`RANDOM`)
-        .setTitle(`Meaning of ${args.join(" ")}`)
-        .setDescription(limitString(definition, 2048))
-        .addField("Example(s)", limitString(example, 1024), true);
-
-      message.channel.send(embed);
+      resolve({
+        definition,
+        example
+      });
     });
+  });
+
+module.exports = {
+  runner,
+  name: "urban",
+  description: "Search and return Urban Dictionary definition",
+  args: true,
+  usage: `normies`,
+  async execute(message, args) {
+    const result = await runner(args.join(" "));
+
+    const embed = new RichEmbed()
+      .setColor(`RANDOM`)
+      .setTitle(`Meaning of ${args.join(" ")}`)
+      .setDescription(limitString(result.definition, 2048))
+      .addField("Example(s)", limitString(result.example, 1024), true);
+
+    message.channel.send(embed);
   }
 };
