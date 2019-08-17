@@ -26,9 +26,7 @@ module.exports = {
         return message.channel.send(embed);
       })
       .catch(err => {
-        const embed = new RichEmbed()
-          .setColor("#ff0000")
-          .addField("Error!", err);
+        const embed = new RichEmbed().setColor("#ff0000").setDescription(err);
 
         return message.channel.send(embed);
       });

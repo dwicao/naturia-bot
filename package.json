@@ -21,6 +21,7 @@
     "express": "^4.16.4",
     "ffmpeg-binaries": "^4.0.0",
     "node-fetch": "^2.6.0",
+    "node-opus": "^0.3.2",
     "puppeteer": "^1.19.0",
     "request": "^2.88.0",
     "svg2img": "^0.6.1",
