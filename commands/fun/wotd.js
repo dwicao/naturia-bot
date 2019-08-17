@@ -2,26 +2,26 @@ const request = require("request");
 const cheerio = require("cheerio");
 const { limitString, getHeaders } = require("../../utils");
 
-let WOTDTitle = "";
-let attribute = "";
-let syllables = "";
-const prounciation = [];
-const definitionAndFacts = [];
-const exampleWords = [];
-const italicWordsDidYouKnow = [];
-const italicWordsExamples = [];
+const runner = () =>
+  new Promise((resolve, reject) => {
+    let WOTDTitle = "";
+    let attribute = "";
+    let syllables = "";
+    const definitionAndFacts = [];
+    const exampleWords = [];
+    const italicWordsDidYouKnow = [];
+    const italicWordsExamples = [];
 
-module.exports = {
-  name: "wotd",
-  description: "Get The Word of The Day",
-  devOnly: true,
-  execute(message, args) {
     const options = {
       url: "https://www.merriam-webster.com/word-of-the-day",
       headers: getHeaders()
     };
 
     request(options, (error, response, data) => {
+      if (error) {
+        reject(error);
+      }
+
       const $ = cheerio.load(data);
 
       WOTDTitle = $(".word-and-pronunciation h1")
@@ -126,19 +126,37 @@ module.exports = {
 `;
       });
 
-      const result = `- :regional_indicator_w: :regional_indicator_o: :regional_indicator_t: :regional_indicator_d:  -
+      resolve({
+        title: `${WOTDTitle.charAt(0).toUpperCase()}${WOTDTitle.slice(1)}`,
+        syllables,
+        attribute,
+        definition: formattedWordDefinition,
+        examples: formattedWordExamples,
+        info: newItalicWordsDidYouKnow
+      });
+    });
+  });
 
-**${WOTDTitle.charAt(0).toUpperCase()}${WOTDTitle.slice(1)}** [**${syllables}**]
-(_${attribute}_)
+module.exports = {
+  runner,
+  name: "wotd",
+  description: "Get The Word of The Day",
+  devOnly: true,
+  async execute(message, args) {
+    const wotd = await runner();
+
+    const result = `- :regional_indicator_w: :regional_indicator_o: :regional_indicator_t: :regional_indicator_d:  -
+
+**${wotd.title}** [**${wotd.syllables}**]
+(_${wotd.attribute}_)
         
 **Definition**
-${formattedWordDefinition}
+${wotd.definition}
 **Example**
-${formattedWordExamples}
+${wotd.examples}
 **Did you know?**
-${newItalicWordsDidYouKnow}`;
+${wotd.info}`;
 
-      message.channel.send(limitString(result, 2000));
-    });
+    message.channel.send(limitString(result, 2000));
   }
 };
