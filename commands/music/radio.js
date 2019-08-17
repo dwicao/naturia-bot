@@ -25,10 +25,10 @@ module.exports = {
 
         return message.channel.send(embed);
       })
-      .catch(() => {
+      .catch(err => {
         const embed = new RichEmbed()
           .setColor("#ff0000")
-          .setDescription("Error!", "Please type");
+          .addField("Error!", err);
 
         return message.channel.send(embed);
       });
