@@ -8,9 +8,9 @@ jest.setTimeout(JEST_TIMEOUT);
 
 describe(`${name} command`, () => {
   test("able to fetch the image", async () => {
-    const getResult = () => fetch(`${baseURI}john`).then(res => res.buffer());
-    const buffer = await getResult();
+    const getResult = () => fetch(`${baseURI}john`).then(res => res);
+    const result = await getResult();
 
-    expect(Buffer.isBuffer(buffer)).toBe(true);
+    expect(result.status).toBe(200);
   });
 });

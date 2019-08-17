@@ -2,7 +2,7 @@
 
 const fetch = require("node-fetch");
 const { url, name } = require("../../../commands/fun/waifu");
-const { JEST_TIMEOUT } = require("../../../utils");
+const { JEST_TIMEOUT, isJpg } = require("../../../utils");
 
 jest.setTimeout(JEST_TIMEOUT);
 
@@ -11,6 +11,6 @@ describe(`${name} command`, () => {
     const getResult = () => fetch(url).then(res => res.buffer());
     const buffer = await getResult();
 
-    expect(Buffer.isBuffer(buffer)).toBe(true);
+    expect(isJpg(buffer)).toBe(true);
   });
 });

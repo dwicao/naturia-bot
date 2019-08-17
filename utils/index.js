@@ -95,6 +95,45 @@ const sendEditErrorMessage = (message, err) => {
 
 const JEST_TIMEOUT = 10000;
 
+const isJpg = buffer => {
+  if (!buffer || buffer.length < 3) {
+    return false;
+  }
+
+  return buffer[0] === 255 && buffer[1] === 216 && buffer[2] === 255;
+};
+
+const isPng = buffer => {
+  if (!buffer || buffer.length < 8) {
+    return false;
+  }
+
+  return (
+    buffer[0] === 0x89 &&
+    buffer[1] === 0x50 &&
+    buffer[2] === 0x4e &&
+    buffer[3] === 0x47 &&
+    buffer[4] === 0x0d &&
+    buffer[5] === 0x0a &&
+    buffer[6] === 0x1a &&
+    buffer[7] === 0x0a
+  );
+};
+
+const isSvg = buffer => {
+  const isBuffer = Buffer.isBuffer(buffer);
+
+  for (let i = 0; i < 24; i++) {
+    const characterCode = isBuffer ? buffer[i] : buffer.charCodeAt(i);
+
+    if (characterCode === 65533 || characterCode <= 8) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 module.exports = {
   JEST_TIMEOUT,
   getPath,
@@ -104,6 +143,9 @@ module.exports = {
   setActivity,
   sendErrorMessage,
   sendEditErrorMessage,
+  isJpg,
+  isPng,
+  isSvg,
   limitString,
   getHeaders,
   toMatrix
