@@ -3,17 +3,18 @@ const request = require("request");
 const cheerio = require("cheerio");
 const { getHeaders } = require("../../utils");
 
-module.exports = {
-  name: "jwotd",
-  description: "Japanese Word of The Day",
-  devOnly: true,
-  execute(message, args) {
+const runner = () =>
+  new Promise((resolve, reject) => {
     const options = {
       url: "https://www.japanesepod101.com/japanese-phrases",
       headers: getHeaders()
     };
 
     request(options, (error, response, data) => {
+      if (error) {
+        reject(error);
+      }
+
       const $ = cheerio.load(data);
 
       const pictureSource = $(".r101-wotd-widget__image").attr("src");
@@ -58,33 +59,51 @@ module.exports = {
         .trim()
         .split(".");
 
-      // rendering
-      const renderMainSection = () => `${kana}
-${romaji}
-${english} (${englishClass})`;
+      resolve({
+        image: pictureSource,
+        kana,
+        romaji,
+        english,
+        englishClass,
+        exampleKana,
+        exampleRomaji,
+        exampleEnglish
+      });
+    });
+  });
 
-      const renderExamples = () => {
-        let result = "";
+module.exports = {
+  runner,
+  name: "jwotd",
+  description: "Japanese Word of The Day",
+  async execute(message, args) {
+    const jWOTD = await runner();
 
-        for (let i = 0; i < exampleKana.length; i++) {
-          result += `${(exampleKana[i] || "").trim()}
-${(exampleRomaji[i] || "").trim()}
-${(exampleEnglish[i] || "").trim()}
+    const renderMainSection = () => `${jWOTD.kana}
+${jWOTD.romaji}
+${jWOTD.english} (${jWOTD.englishClass})`;
+
+    const renderExamples = () => {
+      let result = "";
+
+      for (let i = 0; i < jWOTD.exampleKana.length; i++) {
+        result += `${(jWOTD.exampleKana[i] || "").trim()}
+${(jWOTD.exampleRomaji[i] || "").trim()}
+${(jWOTD.exampleEnglish[i] || "").trim()}
 
 `;
-        }
+      }
 
-        return result;
-      };
+      return result;
+    };
 
-      const embeddedWOTD = new RichEmbed()
-        .setColor(`RANDOM`)
-        .setThumbnail(pictureSource)
-        .addField("Japanese Word of the Day", renderMainSection(), true)
-        .addBlankField(true)
-        .addField("Example", renderExamples(), true);
+    const embeddedWOTD = new RichEmbed()
+      .setColor(`RANDOM`)
+      .setThumbnail(jWOTD.image)
+      .addField("Japanese Word of the Day", renderMainSection(), true)
+      .addBlankField(true)
+      .addField("Example", renderExamples(), true);
 
-      return message.channel.send(embeddedWOTD);
-    });
+    return message.channel.send(embeddedWOTD);
   }
 };
