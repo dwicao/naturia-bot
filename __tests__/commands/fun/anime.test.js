@@ -16,6 +16,7 @@ describe(`${name} command`, () => {
     expect(result.number).toBeGreaterThanOrEqual(result.min);
     expect(result.number).toBeLessThanOrEqual(result.max);
     expect(result.description).toBeTruthy();
+    expect(result.details).toBeTruthy();
     expect(isJpg(buffer)).toBe(true);
   });
 });
