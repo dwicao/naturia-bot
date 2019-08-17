@@ -15,9 +15,12 @@ module.exports = {
     return message.member.voiceChannel
       .join()
       .then(connection => {
-        connection.playStream("http://listen.moe/stream", {
-          bitrate: 192000 /* 192kbps */
-        });
+        connection.playStream(
+          "https://coderadio-relay.freecodecamp.org/radio/8010/radio.mp3",
+          {
+            bitrate: 192000 /* 192kbps */
+          }
+        );
 
         const embed = new RichEmbed()
           .setColor("#68ca55")
