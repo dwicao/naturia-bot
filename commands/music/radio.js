@@ -18,7 +18,7 @@ module.exports = {
         connection.playStream(
           "https://coderadio-relay.freecodecamp.org/radio/8010/radio.mp3",
           {
-            bitrate: 192000 /* 192kbps */
+            bitrate: 128000 /* 128kbps */
           }
         );
 
