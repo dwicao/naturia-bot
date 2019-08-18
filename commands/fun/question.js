@@ -29,30 +29,12 @@ module.exports = {
   aliases: ["ask"],
   usage: "what is human?",
   async execute(message, args) {
-    const question = message.content.slice(11);
+    const answer = await runner(args.join(" "), process.env.WOLFRAM_APPID);
 
-    const url = `https://api.wolframalpha.com/v1/result?i=${encodeURIComponent(
-      question
-    )}&appid=${process.env.WOLFRAM_APPID}`;
+    const result = answer
+      .replace("Wolfram|Alpha", "I")
+      .replace("Wolfram Alpha", "Naturia");
 
-    const options = {
-      url,
-      headers: getHeaders()
-    };
-
-    request(options, (error, response, data) => {
-      if (error) {
-        message.channel.send(
-          `I understand the question but didn't know the answer.`
-        );
-      } else {
-        const answer = Buffer.from(data).toString();
-        const result = answer
-          .replace("Wolfram|Alpha", "I")
-          .replace("Wolfram Alpha", "Naturia");
-
-        message.channel.send(result);
-      }
-    });
+    message.channel.send(result);
   }
 };
