@@ -1,5 +1,9 @@
 const puppeteer = require("puppeteer");
-const { prefix } = require("../../config");
+const { getLoadingMessage } = require("../../utils");
+
+// eslint-disable-next-line
+const no_op = () => {};
+const TOTAL_STEP = 11;
 
 const LANGS = [
   "af",
@@ -43,19 +47,31 @@ const LANGS = [
   "th"
 ];
 
-const runner = async (text, hasLangArgs) => {
+const runner = async (text, callback = no_op, hasLangArgs = false) => {
+  callback(1, TOTAL_STEP);
+
   const browser = await puppeteer.launch({
     args: ["--no-sandbox"]
   });
 
+  callback(2, TOTAL_STEP);
+
   const page = await browser.newPage();
+
+  callback(3, TOTAL_STEP);
 
   await page.goto("https://www.cleverbot.com/", {
     waitUntil: "domcontentloaded"
   });
 
+  callback(4, TOTAL_STEP);
+
   await page.waitFor("input[name=stimulus]");
 
+  callback(5, TOTAL_STEP);
+
+  // I think we don't need this code anymore
+  // Because the cleverbot actually can detect the language
   if (hasLangArgs) {
     await page.click('img[id="actionsicon"]');
 
@@ -67,17 +83,27 @@ const runner = async (text, hasLangArgs) => {
 
   await page.focus("input[name=stimulus]");
 
+  callback(6, TOTAL_STEP);
+
   await page.keyboard.type(text);
+
+  callback(7, TOTAL_STEP);
 
   await page.keyboard.type(String.fromCharCode(13));
 
+  callback(8, TOTAL_STEP);
+
   await page.waitForSelector("#snipTextIcon");
+
+  callback(9, TOTAL_STEP);
 
   const reply = await page.evaluate(() => {
     /* eslint-disable no-undef */
     return [...document.querySelectorAll(".bot")].map(div => div.innerText);
     /* eslint-enable no-undef */
   });
+
+  callback(10, TOTAL_STEP);
 
   await browser.close();
 
@@ -93,14 +119,20 @@ module.exports = {
   cooldown: 5,
   aliases: ["t"],
   execute(message, args) {
-    return message.channel.send(":thinking: (thinking...)").then(async msg => {
+    return message.channel.send(getLoadingMessage(0, 11)).then(async msg => {
       const hasLangArgs =
         args &&
         args.length &&
         args[1] &&
         LANGS.indexOf(args[1].toLowerCase()) !== -1;
 
-      const reply = await runner(args.join(" "));
+      const sendLoadingMessage = (step, total_step) => {
+        msg.edit(getLoadingMessage(step, total_step));
+      };
+
+      const reply = await runner(args.join(" "), sendLoadingMessage);
+
+      msg.edit(getLoadingMessage(TOTAL_STEP, TOTAL_STEP));
 
       return msg.edit(reply);
     });

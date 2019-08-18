@@ -136,12 +136,16 @@ const isSvg = buffer => {
   return false;
 };
 
+const getLoadingMessage = (now, total) =>
+  `Loading data... (${now} out of ${total})`;
+
 module.exports = {
   JEST_TIMEOUT,
   getPath,
   getRootDir,
   getRandomInt,
   getRandomProxy,
+  getLoadingMessage,
   setActivity,
   sendErrorMessage,
   sendEditErrorMessage,

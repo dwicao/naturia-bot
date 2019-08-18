@@ -56,7 +56,6 @@ module.exports = {
     "no-label-var": "error",
     "no-shadow": "error",
     "no-undef-init": "error",
-    "callback-return": "error",
     "handle-callback-err": "error",
     "no-mixed-requires": "error",
     "no-new-require": "error",
