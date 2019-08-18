@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { getRootDir } = require("../../utils");
+const { getRootDir, sendErrorMessage } = require("../../utils");
 
 module.exports = {
   name: "viewlink",
@@ -35,7 +35,7 @@ module.exports = {
         msg.delete();
       })
       .catch(error => {
-        message.channel.send("Fetching Error! Please Try Again.");
+        sendErrorMessage(message, error);
       });
   }
 };
