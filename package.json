@@ -7,6 +7,7 @@
     "start": "ENV=production node index.js",
     "dev": "ENV=development nodemon index.js",
     "test": "eslint --ignore-path .gitignore . && jest",
+    "test:watch": "jest --watch",
     "eslint-check": "eslint --print-config path/to/main.js | eslint-config-prettier-check"
   },
   "keywords": [],
