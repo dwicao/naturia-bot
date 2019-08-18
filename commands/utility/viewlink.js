@@ -20,8 +20,6 @@ module.exports = {
 
         await page.goto(args[0]);
 
-        await page.waitForNavigation({ waitUntil: "networkidle2" });
-
         await page.screenshot({
           path: `${getRootDir()}/public/puppeteer.jpg`,
           type: "jpeg",
