@@ -1,8 +1,8 @@
 const { RichEmbed } = require("discord.js");
 
 module.exports = {
-  name: "radio",
-  description: "Streaming an anime radio",
+  name: "play",
+  description: "24/7 music designed for coding.",
   execute(message, args) {
     if (!message.member.voiceChannel) {
       const embed = new RichEmbed()
