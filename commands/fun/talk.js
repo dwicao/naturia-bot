@@ -89,7 +89,7 @@ module.exports = {
   name: "talk",
   description: "Talk with me (Naturia)",
   args: true,
-  usage: `<country_code> <your_message> | Example: \`${prefix}talk en how are you?\` | \`${prefix}t id apa kabar?\``,
+  usage: `how are you?`,
   cooldown: 5,
   aliases: ["t"],
   execute(message, args) {
@@ -100,42 +100,7 @@ module.exports = {
         args[1] &&
         LANGS.indexOf(args[1].toLowerCase()) !== -1;
 
-      const browser = await puppeteer.launch({
-        args: ["--no-sandbox"]
-      });
-
-      const page = await browser.newPage();
-
-      await page.goto("https://www.cleverbot.com/", {
-        waitUntil: "domcontentloaded"
-      });
-
-      await page.waitFor("input[name=stimulus]");
-
-      if (hasLangArgs) {
-        await page.click('img[id="actionsicon"]');
-
-        await page.select(
-          "#conversationcontainer form select",
-          args[1].toLowerCase()
-        );
-      }
-
-      await page.focus("input[name=stimulus]");
-
-      await page.keyboard.type(args.join(" "));
-
-      await page.keyboard.type(String.fromCharCode(13));
-
-      await page.waitForSelector("#snipTextIcon");
-
-      const reply = await page.evaluate(() => {
-        /* eslint-disable no-undef */
-        return [...document.querySelectorAll(".bot")].map(div => div.innerText);
-        /* eslint-enable no-undef */
-      });
-
-      await browser.close();
+      const reply = await runner(args.join(" "));
 
       return msg.edit(reply[reply.length - 1]);
     });
