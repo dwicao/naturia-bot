@@ -102,7 +102,7 @@ module.exports = {
 
       const reply = await runner(args.join(" "));
 
-      return msg.edit(reply[reply.length - 1]);
+      return msg.edit(reply);
     });
   }
 };
