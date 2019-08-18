@@ -1,8 +1,6 @@
 const puppeteer = require("puppeteer");
 const { prefix } = require("../../config");
 
-const rootDir = __dirname.substring(0, __dirname.indexOf("/command"));
-
 const LANGS = [
   "af",
   "id",
@@ -45,7 +43,49 @@ const LANGS = [
   "th"
 ];
 
+const runner = async (text, hasLangArgs) => {
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox"]
+  });
+
+  const page = await browser.newPage();
+
+  await page.goto("https://www.cleverbot.com/", {
+    waitUntil: "domcontentloaded"
+  });
+
+  await page.waitFor("input[name=stimulus]");
+
+  if (hasLangArgs) {
+    await page.click('img[id="actionsicon"]');
+
+    await page.select(
+      "#conversationcontainer form select",
+      text.split(" ")[0].toLowerCase()
+    );
+  }
+
+  await page.focus("input[name=stimulus]");
+
+  await page.keyboard.type(text);
+
+  await page.keyboard.type(String.fromCharCode(13));
+
+  await page.waitForSelector("#snipTextIcon");
+
+  const reply = await page.evaluate(() => {
+    /* eslint-disable no-undef */
+    return [...document.querySelectorAll(".bot")].map(div => div.innerText);
+    /* eslint-enable no-undef */
+  });
+
+  await browser.close();
+
+  return reply[reply.length - 1];
+};
+
 module.exports = {
+  runner,
   name: "talk",
   description: "Talk with me (Naturia)",
   args: true,

@@ -93,7 +93,7 @@ const sendEditErrorMessage = (message, err) => {
   }
 };
 
-const JEST_TIMEOUT = 10000;
+const JEST_TIMEOUT = 15000;
 
 const isJpg = buffer => {
   if (!buffer || buffer.length < 3) {
