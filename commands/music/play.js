@@ -25,7 +25,7 @@ module.exports = {
         const embed = new RichEmbed()
           .setColor("#68ca55")
           .setDescription(
-            `Now playing music in ${message.member.voiceChannel}`
+            `Enjoy 24/7 music designed for coding in ${message.member.voiceChannel}`
           );
 
         return message.channel.send(embed);
