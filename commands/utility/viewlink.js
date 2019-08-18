@@ -18,7 +18,9 @@ module.exports = {
 
         const page = await browser.newPage();
 
-        await page.goto(args[0]);
+        await page.goto(args[0], {
+          waitUntil: "networkidle0"
+        });
 
         await page.screenshot({
           path: `${getRootDir()}/public/puppeteer.jpg`,
