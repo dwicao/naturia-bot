@@ -79,7 +79,9 @@ const sendErrorMessage = (message, err) => {
   }
 
   if (message && message.channel && message.channel.send) {
-    message.channel.send(ERROR_MESSAGE);
+    return message.channel.send(ERROR_MESSAGE).then(msg => {
+      return msg.delete(5000);
+    });
   }
 };
 

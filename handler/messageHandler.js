@@ -83,11 +83,15 @@ module.exports = (client, message) => {
 
     if (now < expirationTime) {
       const timeLeft = (expirationTime - now) / 1000;
-      return message.reply(
-        `please wait ${timeLeft.toFixed(
-          1
-        )} more second(s) before reusing the \`${command.name}\` command.`
-      );
+      return message
+        .reply(
+          `please wait ${timeLeft.toFixed(
+            1
+          )} more second(s) before reusing the \`${command.name}\` command.`
+        )
+        .then(msg => {
+          return msg.delete(5000);
+        });
     }
   }
 
@@ -98,6 +102,10 @@ module.exports = (client, message) => {
     command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply("There was an error trying to execute that command!");
+    return message
+      .reply("There was an error trying to execute that command!")
+      .then(msg => {
+        return msg.delete(5000);
+      });
   }
 };

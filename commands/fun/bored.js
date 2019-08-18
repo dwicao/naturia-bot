@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const { sendErrorMessage } = require("../../utils");
 
 const runner = () =>
   fetch(`https://www.boredapi.com/api/activity`).then(response =>
@@ -15,7 +16,7 @@ module.exports = {
     if (result && result.activity) {
       message.channel.send(result.activity);
     } else {
-      message.channel.send("Error! try again.");
+      sendErrorMessage(message);
     }
   }
 };

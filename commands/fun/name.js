@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const { sendErrorMessage } = require("../../utils");
 
 const runner = () =>
   fetch(`https://uinames.com/api`).then(response => response.json());
@@ -21,7 +22,7 @@ module.exports = {
         `${result.name} ${result.surname} (${result.gender}) - ${result.region}`
       );
     } else {
-      message.channel.send("Error! try again.");
+      sendErrorMessage(message);
     }
   }
 };

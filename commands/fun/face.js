@@ -1,5 +1,5 @@
-const { RichEmbed } = require("discord.js");
 const svg2img = require("svg2img");
+const { sendErrorMessage } = require("../../utils");
 
 const baseURI = "https://joeschmoe.io/api/v1/";
 
@@ -17,7 +17,7 @@ module.exports = {
 
     svg2img(imageSource, (error, buffer) => {
       if (error) {
-        return message.channel.send("Fetching Error! Please Try Again.");
+        return sendErrorMessage(message);
       }
 
       message.channel.send(`Here is ${args.join(" ")}'s face`, {
