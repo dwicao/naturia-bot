@@ -14,11 +14,13 @@ module.exports = {
   args: true,
   usage: "https://google.com",
   execute(message, args) {
-    const TOTAL_STEP = 5;
+    const TOTAL_STEP = 6;
 
     message.channel
       .send(getLoadingMessage(1, TOTAL_STEP))
       .then(async msg => {
+        const additionalSelector = args.slice(1).join(" ");
+
         const browser = await puppeteer.launch({
           args: ["--no-sandbox"]
         });
@@ -35,13 +37,24 @@ module.exports = {
 
         msg.edit(getLoadingMessage(4, TOTAL_STEP));
 
-        await page.screenshot({
-          path: `${getRootDir()}/public/puppeteer.jpg`,
-          type: "jpeg",
-          fullPage: true
-        });
+        if (additionalSelector) {
+          const targetElement = await page.$(additionalSelector);
 
-        msg.edit(getLoadingMessage(5, TOTAL_STEP));
+          msg.edit(getLoadingMessage(5, TOTAL_STEP));
+
+          await targetElement.screenshot({
+            path: `${getRootDir()}/public/puppeteer.jpg`,
+            type: "jpeg"
+          });
+        } else {
+          await page.screenshot({
+            path: `${getRootDir()}/public/puppeteer.jpg`,
+            type: "jpeg",
+            fullPage: true
+          });
+        }
+
+        msg.edit(getLoadingMessage(6, TOTAL_STEP));
 
         await browser.close();
 
