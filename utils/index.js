@@ -62,7 +62,7 @@ const getRandomProxy = () => {
         resolve(splittedData[0]);
       }
 
-      resolve(splittedData[getRandomInt(0, splittedData.length)]);
+      resolve(splittedData[getRandomInt(0, splittedData.length - 1)]);
     });
   });
 };
@@ -139,6 +139,14 @@ const isSvg = buffer => {
 const getLoadingMessage = (now, total) =>
   `Loading data... (${now} out of ${total})`;
 
+const addHttpPrefix = str => {
+  if (str.indexOf("http://") !== -1 || str.indexOf("https://") !== -1) {
+    return str;
+  }
+
+  return `http://${str}`;
+};
+
 module.exports = {
   JEST_TIMEOUT,
   getPath,
@@ -146,13 +154,14 @@ module.exports = {
   getRandomInt,
   getRandomProxy,
   getLoadingMessage,
+  getHeaders,
   setActivity,
   sendErrorMessage,
   sendEditErrorMessage,
   isJpg,
   isPng,
   isSvg,
+  addHttpPrefix,
   limitString,
-  getHeaders,
   toMatrix
 };

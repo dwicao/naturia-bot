@@ -5,8 +5,9 @@ const {
   getRootDir,
   getRandomInt,
   getRandomProxy,
-  limitString,
   getHeaders,
+  addHttpPrefix,
+  limitString,
   toMatrix
 } = require("../../utils");
 
@@ -36,7 +37,7 @@ describe("Utils function", () => {
     expect(result).not.toBe(result2);
   });
 
-  test(`'getRandomProxy()' return`, async () => {
+  test(`'getRandomProxy()' return value correctly`, async () => {
     const IP_AND_PORT_PATTERN = /^([a-z0-9-]+\.)+[a-z0-9]+:[1-9][0-9]+$/i;
 
     const proxy = await getRandomProxy();
@@ -68,5 +69,12 @@ describe("Utils function", () => {
     const TOTAL_MATRIX = 3;
 
     expect(toMatrix(ARR, TOTAL_MATRIX)).toEqual(EXPECTED_ARR);
+  });
+
+  test(`'addHttpPrefix()' return value correctly`, () => {
+    const INPUT = "www.google.com";
+    const OUTPUT = "http://www.google.com";
+
+    expect(addHttpPrefix(INPUT)).toBe(OUTPUT);
   });
 });

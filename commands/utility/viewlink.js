@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const {
   getRootDir,
+  addHttpPrefix,
   sendErrorMessage,
   getLoadingMessage
 } = require("../../utils");
@@ -28,7 +29,7 @@ module.exports = {
 
         msg.edit(getLoadingMessage(3, TOTAL_STEP));
 
-        await page.goto(args[0], {
+        await page.goto(addHttpPrefix(args[0]), {
           waitUntil: "networkidle0"
         });
 
