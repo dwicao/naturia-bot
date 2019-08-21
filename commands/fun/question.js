@@ -35,6 +35,6 @@ module.exports = {
       .replace("Wolfram|Alpha", "I")
       .replace("Wolfram Alpha", "Naturia");
 
-    message.channel.send(result);
+    return message.channel.send(result);
   }
 };

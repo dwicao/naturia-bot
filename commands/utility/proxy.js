@@ -90,10 +90,10 @@ module.exports = {
           .setTitle("Random 20 SSL Proxies")
           .addField("<IP> <PORT> <COUNTRY>", content, true);
 
-        message.channel.send(embed);
+        return message.channel.send(embed);
       })
       .catch(err => {
-        sendErrorMessage(message, err);
+        return sendErrorMessage(message, err);
       });
   }
 };

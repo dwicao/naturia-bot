@@ -157,6 +157,6 @@ ${wotd.examples}
 **Did you know?**
 ${wotd.info}`;
 
-    message.channel.send(limitString(result, 2000));
+    return message.channel.send(limitString(result, 2000));
   }
 };

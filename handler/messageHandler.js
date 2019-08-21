@@ -1,7 +1,9 @@
 const Discord = require("discord.js");
 const { prefix, botId, authorId } = require("../config");
+const { sendErrorMessage } = require("../utils");
 
 const cooldowns = new Discord.Collection();
+const no_op_promise = () => new Promise(resolve => resolve());
 
 module.exports = (client, message) => {
   const correctPrefix =
@@ -19,7 +21,7 @@ module.exports = (client, message) => {
     console.log("Restarting...");
     message.channel
       .send("Restarting...")
-      .then(() => message.delete())
+      .then(() => message.delete(5000))
       .then(msg => client.destroy())
       .then(() => client.login(process.env.TOKEN))
       .then(() => {
@@ -99,7 +101,10 @@ module.exports = (client, message) => {
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
   try {
-    command.execute(message, args);
+    (command.execute(message, args) || no_op_promise()).catch(err => {
+      console.error(err);
+      return sendErrorMessage(message, err);
+    });
   } catch (error) {
     console.error(error);
     return message

@@ -23,6 +23,6 @@ module.exports = {
       result.gender
     }, probability: ${result.probability * 100}%`;
 
-    message.channel.send(result.gender ? genderMessage : unknownMessage);
+    return message.channel.send(result.gender ? genderMessage : unknownMessage);
   }
 };

@@ -97,6 +97,8 @@ module.exports = {
       return message.channel.send(embed);
     }
 
-    message.reply(`the correct usage is: \`${prefix}cur 10 USD to IDR\``);
+    return message.reply(
+      `the correct usage is: \`${prefix}cur 10 USD to IDR\``
+    );
   }
 };

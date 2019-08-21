@@ -58,14 +58,16 @@ module.exports = {
 
         await browser.close();
 
-        message.channel.send({
-          files: [{ attachment: `${getRootDir()}/public/puppeteer.jpg` }]
-        });
-
-        msg.delete();
+        return message.channel
+          .send({
+            files: [{ attachment: `${getRootDir()}/public/puppeteer.jpg` }]
+          })
+          .then(() => {
+            msg.delete(5000);
+          });
       })
       .catch(error => {
-        sendErrorMessage(message, error);
+        return sendErrorMessage(message, error);
       });
   }
 };

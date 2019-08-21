@@ -76,6 +76,6 @@ module.exports = {
       .addField("Kanji name", result.kanji, true)
       .addField("Pronunciation", result.pronunciation, true);
 
-    message.channel.send(embed);
+    return message.channel.send(embed);
   }
 };

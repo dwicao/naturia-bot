@@ -20,7 +20,7 @@ module.exports = {
         return sendErrorMessage(message);
       }
 
-      message.channel.send(`Here is ${args.join(" ")}'s face`, {
+      return message.channel.send(`Here is ${args.join(" ")}'s face`, {
         files: [{ attachment: buffer }]
       });
     });

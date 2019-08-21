@@ -10,6 +10,8 @@ module.exports = {
   async execute(message, args) {
     const result = await runner();
 
-    message.channel.send(`"${result.quote.body}" - ${result.quote.author}`);
+    return message.channel.send(
+      `"${result.quote.body}" - ${result.quote.author}`
+    );
   }
 };

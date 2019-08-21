@@ -81,6 +81,6 @@ This bot is open-source, you can contribute at [here](https://github.com/dwicao/
       .setColor(`RANDOM`)
       .setDescription(data.join("\n"));
 
-    message.channel.send(embed);
+    return message.channel.send(embed);
   }
 };

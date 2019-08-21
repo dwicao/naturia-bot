@@ -74,6 +74,6 @@ module.exports = {
       .addField("Random Anime Info", renderMainSection(), true)
       .addField("Description", limitString(animeInfo.description, 1024), true);
 
-    message.channel.send(embeddedDefinition);
+    return message.channel.send(embeddedDefinition);
   }
 };

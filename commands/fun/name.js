@@ -18,11 +18,11 @@ module.exports = {
       result.gender &&
       result.region
     ) {
-      message.channel.send(
+      return message.channel.send(
         `${result.name} ${result.surname} (${result.gender}) - ${result.region}`
       );
     } else {
-      sendErrorMessage(message);
+      return sendErrorMessage(message);
     }
   }
 };

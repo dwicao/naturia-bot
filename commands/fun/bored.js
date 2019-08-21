@@ -14,9 +14,9 @@ module.exports = {
     const result = await runner();
 
     if (result && result.activity) {
-      message.channel.send(result.activity);
+      return message.channel.send(result.activity);
     } else {
-      sendErrorMessage(message);
+      return sendErrorMessage(message);
     }
   }
 };

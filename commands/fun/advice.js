@@ -10,6 +10,6 @@ module.exports = {
   async execute(message, args) {
     const result = await runner();
 
-    message.channel.send(`Advice: "${result.slip.advice}"`);
+    return message.channel.send(`Advice: "${result.slip.advice}"`);
   }
 };

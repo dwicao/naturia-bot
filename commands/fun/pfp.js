@@ -38,6 +38,6 @@ module.exports = {
       });
     }
 
-    sendErrorMessage(message);
+    return sendErrorMessage(message);
   }
 };

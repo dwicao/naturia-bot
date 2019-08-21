@@ -53,6 +53,6 @@ module.exports = {
       .setDescription(limitString(result.definition, 2048))
       .addField("Example(s)", limitString(result.example, 1024), true);
 
-    message.channel.send(embed);
+    return message.channel.send(embed);
   }
 };
