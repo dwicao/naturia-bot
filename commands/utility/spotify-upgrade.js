@@ -17,9 +17,12 @@ module.exports = {
   args: true,
   usage: `<email> | Example: ${prefix}spotify-upgrade john@example.com`,
   allowedRole: "spotify-upgrader-access",
+  allowedChannelID: process.env.SPOTIFY_CHANNEL_ID,
   async execute(message, args) {
     const progressText = new ProgressText();
     progressText.init(20);
+
+    const randomNum = getRandomInt(1, 999);
 
     const USERNAME = process.env.SPOTIFY_USERNAME;
     const PASSWORD = process.env.SPOTIFY_PASSWORD;
@@ -115,7 +118,7 @@ module.exports = {
 
         await page.focus("input[name=firstName]");
 
-        await page.keyboard.type(`#${getRandomInt(1, 999)} rein`);
+        await page.keyboard.type(`#${randomNum} rein`);
 
         msg.edit(progressText.update());
 
@@ -153,7 +156,7 @@ module.exports = {
 
         return message.channel
           .send(
-            `:white_check_mark: Invitation has been sent! Check your email, <@${message.author.id}>`,
+            `:white_check_mark: Invitation #${randomNum} has been sent! Check your email, <@${message.author.id}>`,
             {
               files: [{ attachment: `${getRootDir()}/public/spotify.jpg` }]
             }

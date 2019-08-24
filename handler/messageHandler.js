@@ -56,6 +56,21 @@ module.exports = (client, message) => {
   if (!correctPrefix || !command || message.author.id === botId) return;
 
   if (
+    command.allowedChannelID &&
+    message.channel.id !== command.allowedChannelID
+  ) {
+    return message
+      .reply(
+        `That command can only be used in ${client.channels.get(
+          command.allowedChannelID
+        )}`
+      )
+      .then(msg => {
+        return msg.delete(10000);
+      });
+  }
+
+  if (
     command.allowedRole &&
     !message.member.roles.find(r => r.name === command.allowedRole)
   ) {
