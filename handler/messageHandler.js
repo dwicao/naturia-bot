@@ -21,7 +21,7 @@ module.exports = (client, message) => {
     console.log("Restarting...");
     message.channel
       .send("Restarting...")
-      .then(() => message.delete(5000))
+      .then(() => message.delete(10000))
       .then(msg => client.destroy())
       .then(() => client.login(process.env.TOKEN))
       .then(() => {
@@ -37,12 +37,14 @@ module.exports = (client, message) => {
   }
 
   if (commandName === "say" && message.author.id === authorId) {
-    message.delete();
+    message.delete(500);
     return message.channel.send(message.content.slice(6));
   }
 
   if (message.content.includes(`<@${botId}>`)) {
-    return message.channel.send(`My prefix is \`${prefix}\``);
+    return message.channel.send(`My prefix is \`${prefix}\``).then(msg => {
+      return msg.delete(10000);
+    });
   }
 
   const command =
@@ -53,8 +55,23 @@ module.exports = (client, message) => {
 
   if (!correctPrefix || !command || message.author.id === botId) return;
 
+  if (
+    command.allowedRole &&
+    !message.member.roles.find(r => r.name === command.allowedRole)
+  ) {
+    return message
+      .reply(`You need \`${command.allowedRole}\` role to use this command!`)
+      .then(msg => {
+        return msg.delete(10000);
+      });
+  }
+
   if (command.devOnly && message.author.id !== authorId) {
-    return message.reply("Only the administrator can execute that command!");
+    return message
+      .reply("Only the administrator can execute that command!")
+      .then(msg => {
+        return msg.delete(10000);
+      });
   }
 
   if (command.guildOnly && message.channel.type !== "text") {
@@ -68,7 +85,9 @@ module.exports = (client, message) => {
       reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
     }
 
-    return message.channel.send(reply);
+    return message.channel.send(reply).then(msg => {
+      return msg.delete(10000);
+    });
   }
 
   if (!cooldowns.has(command.name)) {
@@ -92,7 +111,7 @@ module.exports = (client, message) => {
           )} more second(s) before reusing the \`${command.name}\` command.`
         )
         .then(msg => {
-          return msg.delete(5000);
+          return msg.delete(10000);
         });
     }
   }
@@ -110,7 +129,7 @@ module.exports = (client, message) => {
     return message
       .reply("There was an error trying to execute that command!")
       .then(msg => {
-        return msg.delete(5000);
+        return msg.delete(10000);
       });
   }
 };

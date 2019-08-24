@@ -3,7 +3,30 @@ const fs = require("fs");
 const UserAgent = require("user-agents");
 
 const IS_PROD = process.env.ENV === "production";
-const ERROR_MESSAGE = "Error while fetching data! Please Try Again.";
+const ERROR_MESSAGE = ":x: Error: Couldn't get the data! Please Try Again";
+
+class ProgressText {
+  constructor() {
+    this.total = 0;
+    this.current = 0;
+  }
+
+  init(total) {
+    this.total = total;
+    this.current = 0;
+    this.update(this.current);
+  }
+
+  update(current) {
+    if (current) {
+      this.current = current;
+    } else {
+      this.current = this.current + 1;
+    }
+
+    return `Loading data... (${this.current} out of ${this.total})`;
+  }
+}
 
 const setActivity = client => {
   if (IS_PROD) {
@@ -73,6 +96,10 @@ const getHeaders = () => {
   };
 };
 
+const getUserAgent = () => new UserAgent().toString();
+
+const getErrorMessage = () => ERROR_MESSAGE;
+
 const sendErrorMessage = (message, err) => {
   if (err) {
     console.error(err);
@@ -83,7 +110,7 @@ const sendErrorMessage = (message, err) => {
       err && err.message ? `:x: Error: ${err.message}` : ERROR_MESSAGE;
 
     return message.channel.send(err_msg).then(msg => {
-      return msg.delete(5000);
+      return msg.delete(10000);
     });
   }
 };
@@ -139,8 +166,10 @@ const isSvg = buffer => {
   return false;
 };
 
-const getLoadingMessage = (now, total) =>
-  `Loading data... (${now} out of ${total})`;
+const getLoadingMessage = (now, total) => {
+  now += 1;
+  return `Loading data... (${now} out of ${total})`;
+};
 
 const addHttpPrefix = str => {
   if (str.indexOf("http://") !== -1 || str.indexOf("https://") !== -1) {
@@ -152,12 +181,15 @@ const addHttpPrefix = str => {
 
 module.exports = {
   JEST_TIMEOUT,
+  ProgressText,
   getPath,
   getRootDir,
   getRandomInt,
   getRandomProxy,
   getLoadingMessage,
   getHeaders,
+  getUserAgent,
+  getErrorMessage,
   setActivity,
   sendErrorMessage,
   sendEditErrorMessage,

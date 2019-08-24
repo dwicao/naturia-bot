@@ -63,7 +63,7 @@ module.exports = {
             files: [{ attachment: `${getRootDir()}/public/puppeteer.jpg` }]
           })
           .then(() => {
-            msg.delete(5000);
+            msg.delete(10000);
           });
       })
       .catch(error => {

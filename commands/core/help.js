@@ -66,6 +66,10 @@ This bot is open-source, you can contribute at [here](https://github.com/dwicao/
 
     data.push(`**Name:** ${command.name}`);
 
+    if (command.allowedRole)
+      data.push(
+        `**Note:** Only user with \`${command.allowedRole}\` role can execute this command`
+      );
     if (command.devOnly)
       data.push(`**Note:** Only the administrators can execute this command`);
     if (command.aliases)
