@@ -179,6 +179,18 @@ const addHttpPrefix = str => {
   return `http://${str}`;
 };
 
+const getParameterByName = (url, name) => {
+  const _name = name.replace(/[[\]]/g, "\\$&");
+  const regex = new RegExp(`[?&]${_name}(=([^&#]*)|&|#|$)`),
+    results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return "";
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+};
+
+const promiseTimeout = time => value =>
+  new Promise(resolve => setTimeout(resolve(value), time));
+
 module.exports = {
   JEST_TIMEOUT,
   ProgressText,
@@ -187,6 +199,7 @@ module.exports = {
   getRandomInt,
   getRandomProxy,
   getLoadingMessage,
+  getParameterByName,
   getHeaders,
   getUserAgent,
   getErrorMessage,
@@ -198,5 +211,6 @@ module.exports = {
   isSvg,
   addHttpPrefix,
   limitString,
+  promiseTimeout,
   toMatrix
 };
