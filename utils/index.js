@@ -191,6 +191,14 @@ const getParameterByName = (url, name) => {
 const promiseTimeout = time => value =>
   new Promise(resolve => setTimeout(resolve(value), time));
 
+const getUUID = () =>
+  Math.random()
+    .toString(36)
+    .substring(2, 15) +
+  Math.random()
+    .toString(36)
+    .substring(2, 15);
+
 module.exports = {
   JEST_TIMEOUT,
   ProgressText,
@@ -203,6 +211,7 @@ module.exports = {
   getHeaders,
   getUserAgent,
   getErrorMessage,
+  getUUID,
   setActivity,
   sendErrorMessage,
   sendEditErrorMessage,
