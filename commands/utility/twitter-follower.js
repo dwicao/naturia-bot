@@ -154,7 +154,7 @@ module.exports = {
         msg.edit(progressText.update());
         await page.focus("input[name=password]");
         msg.edit(progressText.update());
-        await page.keyboard.type("rein#0707");
+        await page.keyboard.type("(rein)carnation#0707");
         msg.edit(progressText.update());
 
         await page.waitFor(1500);

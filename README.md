@@ -17,4 +17,4 @@ A discord bot for my server
 
 # License
 
-MIT - Made with ♥ by dwicao (rein#0707)
+MIT - Made with ♥ by (rein)carnation#0707
