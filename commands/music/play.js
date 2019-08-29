@@ -16,9 +16,9 @@ module.exports = {
       .join()
       .then(connection => {
         connection.playStream(
-          "https://coderadio-relay.freecodecamp.org/radio/8010/radio.mp3",
+          "https://coderadio-admin.freecodecamp.org/radio/8010/low.mp3",
           {
-            bitrate: 128000 /* 128kbps */
+            bitrate: 64000 /* 64kbps */
           }
         );
 
