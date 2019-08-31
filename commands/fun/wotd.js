@@ -137,26 +137,31 @@ const runner = () =>
     });
   });
 
+const render = wotd => {
+  const wordings = `- :regional_indicator_w: :regional_indicator_o: :regional_indicator_t: :regional_indicator_d:  -
+
+    **${wotd.title}** [**${wotd.syllables}**]
+    (_${wotd.attribute}_)
+            
+    **Definition**
+    ${wotd.definition}
+    **Example**
+    ${wotd.examples}
+    **Did you know?**
+    ${wotd.info}`;
+
+  return limitString(wordings, 2000);
+};
+
 module.exports = {
   runner,
+  render,
   name: "wotd",
   description: "Get The Word of The Day",
   devOnly: true,
   async execute(message, args) {
     const wotd = await runner();
 
-    const result = `- :regional_indicator_w: :regional_indicator_o: :regional_indicator_t: :regional_indicator_d:  -
-
-**${wotd.title}** [**${wotd.syllables}**]
-(_${wotd.attribute}_)
-        
-**Definition**
-${wotd.definition}
-**Example**
-${wotd.examples}
-**Did you know?**
-${wotd.info}`;
-
-    return message.channel.send(limitString(result, 2000));
+    return message.channel.send(render(wotd));
   }
 };

@@ -4,20 +4,11 @@ const http = require("http");
 const express = require("express");
 const messageHandler = require("./handler/messageHandler");
 const { getPath, setActivity } = require("./utils");
+const routes = require("./routes");
 const app = express();
 
 const IS_PROD = process.env.ENV === "production";
 const TOKEN = IS_PROD ? process.env.TOKEN : process.env.DEV_TOKEN;
-
-app.get("/", (request, response) => {
-  response.sendStatus(200);
-});
-
-app.listen(process.env.PORT);
-
-setInterval(() => {
-  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-}, 280000);
 
 const commandFiles = getPath("./commands");
 const client = new Discord.Client();
@@ -29,6 +20,16 @@ for (const filePath of commandFiles) {
   client.commands.set(command.name, command);
   client.commandPaths.set(command.name, filePath);
 }
+
+app.get("/", routes.root);
+
+app.get("/wotd", (req, res) => routes.wotd(req, res, client));
+
+app.listen(process.env.PORT);
+
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
 
 client.login(TOKEN);
 
