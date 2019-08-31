@@ -1,6 +1,10 @@
+require("dotenv").config();
 const Discord = require("discord.js");
 const { prefix, botId, authorId } = require("../config");
 const { sendErrorMessage } = require("../utils");
+
+const IS_PROD = process.env.ENV === "production";
+const TOKEN = IS_PROD ? process.env.TOKEN : process.env.DEV_TOKEN;
 
 const cooldowns = new Discord.Collection();
 const no_op_promise = () => new Promise(resolve => resolve());
@@ -22,8 +26,8 @@ module.exports = (client, message) => {
     message.channel
       .send("Restarting...")
       .then(() => message.delete(10000))
-      .then(msg => client.destroy())
-      .then(() => client.login(process.env.TOKEN))
+      .then(() => client.destroy())
+      .then(() => client.login(TOKEN))
       .then(() => {
         console.log(`Logged in as ${client.user.tag}!`);
         console.log("Ready!");

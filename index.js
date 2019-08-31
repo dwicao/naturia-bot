@@ -6,6 +6,9 @@ const messageHandler = require("./handler/messageHandler");
 const { getPath, setActivity } = require("./utils");
 const app = express();
 
+const IS_PROD = process.env.ENV === "production";
+const TOKEN = IS_PROD ? process.env.TOKEN : process.env.DEV_TOKEN;
+
 app.get("/", (request, response) => {
   response.sendStatus(200);
 });
@@ -27,7 +30,7 @@ for (const filePath of commandFiles) {
   client.commandPaths.set(command.name, filePath);
 }
 
-client.login(process.env.TOKEN);
+client.login(TOKEN);
 
 client.on("ready", () => {
   console.log(`Logged in as: ${client.user.tag}`);
