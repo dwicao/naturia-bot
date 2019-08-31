@@ -18,7 +18,6 @@ describe("Utils function", () => {
     expect(result).toContain("core/help.js");
     expect(result).toContain("fun/advice.js");
     expect(result).toContain("japanese/jdef.js");
-    expect(result).toContain("music/play.js");
     expect(result).toContain("utility/currency.js");
   });
 
