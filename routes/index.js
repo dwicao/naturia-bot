@@ -8,20 +8,25 @@ const {
   getEmbeds: hnGetEmbeds
 } = require("../commands/utility/hacker-news");
 
-const {
-  runner: doraemonRunner
-} = require("../commands/fun/doraemon-today");
+const { runner: doraemonRunner } = require("../commands/fun/doraemon-today");
+
+const { runner: jokeRunner } = require("../commands/fun/joke");
 
 const { WOTD_CHANNEL_ID, WOTD_KEY, HN_CHANNEL_ID, HN_KEY } = process.env;
 
 const root = (req, res) => {
-  res.render('index');
+  res.render("index");
+};
+
+const joke = async (req, res) => {
+  const { setup, punchline } = await jokeRunner();
+  res.render("joke", { description: `${setup} ${punchline}` });
 };
 
 const doraemon = async (req, res) => {
-  const {image, description} = await doraemonRunner();
-  res.render('doraemon', { image, description });
-}
+  const { image, description } = await doraemonRunner();
+  res.render("doraemon", { image, description });
+};
 
 const wotd = async (req, res, client) => {
   if (req.query.key === WOTD_KEY) {
@@ -77,5 +82,6 @@ module.exports = {
   root,
   wotd,
   hn,
+  joke,
   doraemon
 };

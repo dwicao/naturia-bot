@@ -10,9 +10,9 @@ module.exports = {
   name: "joke",
   description: "Generate a random joke",
   async execute(message, args) {
-    const result = await runner();
+    const { setup, punchline } = await runner();
 
-    return message.channel.send(`"${result.setup}"
-|| ${result.punchline} ||`);
+    return message.channel.send(`"${setup}"
+|| ${punchline} ||`);
   }
 };
