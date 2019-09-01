@@ -1,18 +1,27 @@
 const {
   runner: wotdRunner,
   render: wotdRender
-} = require("./commands/fun/wotd");
+} = require("../commands/fun/wotd");
 
 const {
   runner: hnRunner,
   getEmbeds: hnGetEmbeds
-} = require("./commands/utility/hacker-news");
+} = require("../commands/utility/hacker-news");
+
+const {
+  runner: doraemonRunner
+} = require("../commands/fun/doraemon-today");
 
 const { WOTD_CHANNEL_ID, WOTD_KEY, HN_CHANNEL_ID, HN_KEY } = process.env;
 
 const root = (req, res) => {
-  res.sendStatus(200);
+  res.render('index');
 };
+
+const doraemon = async (req, res) => {
+  const {image, description} = await doraemonRunner();
+  res.render('doraemon', { image, description });
+}
 
 const wotd = async (req, res, client) => {
   if (req.query.key === WOTD_KEY) {
@@ -67,5 +76,6 @@ const hn = async (req, res, client) => {
 module.exports = {
   root,
   wotd,
-  hn
+  hn,
+  doraemon
 };

@@ -21,11 +21,15 @@ for (const filePath of commandFiles) {
   client.commandPaths.set(command.name, filePath);
 }
 
+app.set("view engine", "ejs");
+
 app.get("/", routes.root);
 
 app.get("/wotd", (req, res) => routes.wotd(req, res, client));
 
 app.get("/hn", (req, res) => routes.hn(req, res, client));
+
+app.get("/doraemon", routes.doraemon);
 
 app.listen(process.env.PORT);
 

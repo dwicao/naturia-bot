@@ -41,7 +41,7 @@ module.exports = (client, message) => {
   }
 
   if (commandName === "say" && message.author.id === authorId) {
-    message.delete(500);
+    message.delete(300);
     return message.channel.send(message.content.slice(6));
   }
 

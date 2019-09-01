@@ -88,7 +88,7 @@ module.exports = {
   name: "hacker-news",
   description: "Get list of posts in homepage from Hacker News",
   aliases: ["hn"],
-  cooldown: 60,
+  devOnly: true,
   async execute(message, args) {
     const titles = await runner();
 
