@@ -41,41 +41,59 @@ const runner = () =>
 const render = titles => {
   let partOne = "";
   let partTwo = "";
+  let partThree = "";
 
-  titles.slice(0, 15).forEach((title, index) => {
+  titles.slice(0, 10).forEach((title, index) => {
     partOne += `${index + 1}. [${title.text}](${title.link})\n\n`;
   });
 
-  titles.slice(15, 30).forEach((title, index) => {
-    partTwo += `${index + 16}. [${title.text}](${title.link})\n\n`;
+  titles.slice(10, 20).forEach((title, index) => {
+    partTwo += `${index + 11}. [${title.text}](${title.link})\n\n`;
+  });
+
+  titles.slice(20, titles.length).forEach((title, index) => {
+    partThree += `${index + 21}. [${title.text}](${title.link})\n\n`;
   });
 
   return {
     partOne,
-    partTwo
+    partTwo,
+    partThree
+  };
+};
+
+const getEmbeds = titles => {
+  return {
+    one: new RichEmbed()
+      .setColor(`#ff6600`)
+      .setTitle("Hacker News Today")
+      .setDescription(render(titles).partOne),
+
+    two: new RichEmbed()
+      .setColor(`#ff6600`)
+      .setDescription(render(titles).partTwo),
+
+    three: new RichEmbed()
+      .setColor(`#ff6600`)
+      .setDescription(render(titles).partThree)
+      .setFooter("Hacker News", "https://news.ycombinator.com/y18.gif")
+      .setTimestamp()
   };
 };
 
 module.exports = {
   runner,
   render,
+  getEmbeds,
   name: "hacker-news",
-  description: "Generate a list posts from Hacker News",
+  description: "Get list of posts in homepage from Hacker News",
   aliases: ["hn"],
   cooldown: 60,
   async execute(message, args) {
     const titles = await runner();
 
-    const embedOne = new RichEmbed()
-      .setColor(`#ff6600`)
-      .setTitle("Hacker News Today")
-      .setDescription(render(titles).partOne);
-
-    const embedTwo = new RichEmbed()
-      .setColor(`#ff6600`)
-      .setDescription(render(titles).partTwo);
-
-    message.channel.send(embedOne);
-    return message.channel.send(embedTwo);
+    message.channel.send(getEmbeds(titles).one);
+    message.channel.send(getEmbeds(titles).two);
+    return message.channel.send(getEmbeds(titles).three);
   }
 };

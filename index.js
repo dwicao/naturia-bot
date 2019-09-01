@@ -25,6 +25,8 @@ app.get("/", routes.root);
 
 app.get("/wotd", (req, res) => routes.wotd(req, res, client));
 
+app.get("/hn", (req, res) => routes.hn(req, res, client));
+
 app.listen(process.env.PORT);
 
 setInterval(() => {
