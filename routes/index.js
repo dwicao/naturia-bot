@@ -20,7 +20,9 @@ const root = (req, res) => {
 
 const joke = async (req, res) => {
   const { setup, punchline } = await jokeRunner();
-  res.render("joke", { description: `${setup} ${punchline}` });
+  const image = `https://static.xx.fbcdn.net/images/emoji.php/v9/fd0/1/16/1f602.png?${new Date().getTime()}`;
+
+  res.render("joke", { image, description: `${setup} ${punchline}` });
 };
 
 const doraemon = async (req, res) => {
