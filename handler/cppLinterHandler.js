@@ -29,7 +29,10 @@ module.exports = async msg => {
     text = codeblock(text, "diff");
     if (text.length > 2000) text = await postHastebin(text);
     return m.edit(`
-${msg.author.toString()}, Output :        
+${msg.author.toString()}, Output :
+\`\`\`
+${text}
+\`\`\`
 `);
   } catch (e) {
     m.delete();
