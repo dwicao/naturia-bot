@@ -28,6 +28,9 @@ app.get("/wotd", (req, res) => routes.wotd(req, res, client));
 app.get("/hn", (req, res) => routes.hn(req, res, client));
 app.get("/doraemon", routes.doraemon);
 app.get("/joke", routes.joke);
+app.get("/javascript_trending", (req, res) =>
+  routes.javascript_trending(req, res, client)
+);
 
 app.listen(process.env.PORT);
 

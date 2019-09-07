@@ -106,23 +106,9 @@ const render = ({
   return embedDescriptions;
 };
 
-const getEmbeds = result => {
-  const embedCollections = [];
-  const embedDescriptions = render(result);
-
-  embedDescriptions.forEach((text, index) => {
-    embedCollections.push(
-      new RichEmbed().setColor(`#ff6600`).setDescription(text)
-    );
-  });
-
-  return embedCollections;
-};
-
 module.exports = {
   runner,
   render,
-  getEmbeds,
   name: "javascript-trending",
   description: "Get list of trending Javascript repos in Github",
   aliases: ["jt"],
