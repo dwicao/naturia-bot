@@ -10,6 +10,10 @@ const cooldowns = new Discord.Collection();
 const no_op_promise = () => new Promise(resolve => resolve());
 
 module.exports = (client, message) => {
+  if (/```(js|javascript)(.|\s)+```/gi.test(message.content))
+    return require("./linterHandler.js")(message);
+  if (/```(cpp)(.|\s)+```/gi.test(message.content))
+    return require("./cppLinterHandler.js")(message);
   const correctPrefix =
     message.content.slice(0, prefix.length).toLowerCase() ===
     prefix.toLowerCase();

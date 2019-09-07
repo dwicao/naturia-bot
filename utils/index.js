@@ -1,9 +1,9 @@
 const path = require("path");
 const fs = require("fs");
 const UserAgent = require("user-agents");
-
 const IS_PROD = process.env.ENV === "production";
 const ERROR_MESSAGE = ":x: Error: Couldn't get the data! Please Try Again";
+const snek = require("node-superfetch");
 
 class ProgressText {
   constructor() {
@@ -199,6 +199,17 @@ const getUUID = () =>
     .toString(36)
     .substring(2, 15);
 
+const postHastebin = async text => {
+  const { body } = await snek
+    .post("https://www.hastebin.com/documents")
+    .send(text);
+  return `https://www.hastebin.com/${body.key}`;
+};
+
+const codeblock = (string, code) => {
+  return `\`\`\`${code}\n${string}\`\`\``;
+};
+
 module.exports = {
   JEST_TIMEOUT,
   ProgressText,
@@ -221,5 +232,7 @@ module.exports = {
   addHttpPrefix,
   limitString,
   promiseTimeout,
-  toMatrix
+  toMatrix,
+  postHastebin,
+  codeblock
 };

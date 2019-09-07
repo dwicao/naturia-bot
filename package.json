@@ -22,6 +22,7 @@
     "ejs": "^2.6.2",
     "express": "^4.16.4",
     "node-fetch": "^2.6.0",
+    "node-superfetch": "^0.1.9",
     "puppeteer": "^1.19.0",
     "request": "^2.88.0",
     "svg2img": "^0.6.1",
