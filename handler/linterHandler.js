@@ -37,9 +37,13 @@ module.exports = async msg => {
         .setColor("#FF0000")
         .addField("🚫 Errors", `\`\`\`diff\n${errs.join("\n")}\`\`\``)
         .addField("🔗Annotated Code", `\`\`\`${annotate(code, errors)}\`\`\``);
-      msg.channel.send(bmsg[Math.floor(Math.random() * bmsg.length) - 1], {
-        embed: embed
-      });
+      msg.channel.send(
+        `**${
+          bmsg[Math.floor(Math.random() * bmsg.length) - 1]
+        }**\n\n**🚫 Errors**\n\`\`\`diff\n${errs.join(
+          "\n"
+        )}\`\`\`\n\n**🔗Annotated Code**\n\`\`\`${annotate(code, errors)}\`\`\``
+      );
     });
 };
 

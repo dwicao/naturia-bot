@@ -11,12 +11,11 @@ module.exports = async msg => {
     .match(/```(cpp)?(.|\s)+```/gi)[0]
     .replace(/```(cpp)?|```/gi, "")
     .trim();
-  await msg.react("✔");
-  const filter = (rect, usr) => rect.emoji === "✔" && usr.id === msg.author.id;
-  const m = await msg.channel.send("Compiling....");
+  await msg.react("⚒");
+  const filter = (rect, usr) => rect.emoji === "⚒" && usr.id === msg.author.id;
   const response = await msg.awaitReactions(filter, {
     max: 1,
-    time: 60000
+    time: 10000
   });
   if (!response.size) return undefined;
   try {
@@ -28,14 +27,8 @@ module.exports = async msg => {
       });
     text = codeblock(text, "diff");
     if (text.length > 2000) text = await postHastebin(text);
-    return m.edit(`
-${msg.author.toString()}, Output :
-\`\`\`
-${text}
-\`\`\`
-`);
+    return msg.reply(text);
   } catch (e) {
-    m.delete();
     return msg.reply(`Something went spoopy 👀 ${codeblock(e.stack, "ini")}`);
   }
 };
