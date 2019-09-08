@@ -96,7 +96,7 @@ const render = ({
   const embedDescriptions = [];
 
   titles.forEach((title, i) => {
-    const text = `${i + 1}. [${title}](${links[i]}) (${todayStars[i]}) \n ${
+    const text = `${i + 1}. [**${title}**](${links[i]}) (${todayStars[i]}) \n ${
       descriptions[i]
     } \n :star:${totalStars[i]} :fork_and_knife:${totalForks[i]}`;
 
