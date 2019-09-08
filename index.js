@@ -31,6 +31,7 @@ app.get("/joke", routes.joke);
 app.get("/javascript_trending", (req, res) =>
   routes.javascript_trending(req, res, client)
 );
+app.get("/steam_deals", (req, res) => routes.steam_deals(req, res, client));
 
 app.listen(process.env.PORT);
 

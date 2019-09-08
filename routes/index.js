@@ -20,12 +20,19 @@ const {
 } = require("../commands/utility/javascript-trending");
 
 const {
+  runner: steamDealsRunner,
+  render: steamDealsRender
+} = require("../commands/utility/steam-deals");
+
+const {
   WOTD_CHANNEL_ID,
   WOTD_KEY,
   HN_CHANNEL_ID,
   HN_KEY,
   JT_CHANNEL_ID,
-  JT_KEY
+  JT_KEY,
+  SD_CHANNEL_ID,
+  SD_KEY
 } = process.env;
 
 const root = (req, res) => {
@@ -68,6 +75,47 @@ const javascript_trending = async (req, res, client) => {
           .setColor(`#ff6600`)
           .setTimestamp()
           .setFooter(`Source: Github Trending`)
+      )
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch(() => {
+        res.sendStatus(500);
+      });
+  } else {
+    res.sendStatus(400);
+  }
+};
+
+const steam_deals = async (req, res, client) => {
+  if (req.query.key === SD_KEY) {
+    const result = await steamDealsRunner();
+
+    client.channels
+      .get(SD_CHANNEL_ID)
+      .send(
+        new RichEmbed()
+          .setColor(`#ff6600`)
+          .setDescription(`**STEAM Deals Today**`)
+      );
+
+    steamDealsRender(result).forEach(({ footer, thumbnail, description }) => {
+      client.channels.get(SD_CHANNEL_ID).send(
+        new RichEmbed()
+          .setColor(`#008000`)
+          .setFooter(footer)
+          .setThumbnail(thumbnail)
+          .setDescription(description)
+      );
+    });
+
+    return client.channels
+      .get(SD_CHANNEL_ID)
+      .send(
+        new RichEmbed()
+          .setColor(`#ff6600`)
+          .setTimestamp()
+          .setFooter(`Source: gg.deals`)
       )
       .then(() => {
         res.sendStatus(200);
@@ -136,5 +184,6 @@ module.exports = {
   hn,
   joke,
   javascript_trending,
+  steam_deals,
   doraemon
 };
