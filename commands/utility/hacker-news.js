@@ -44,15 +44,15 @@ const render = titles => {
   let partThree = "";
 
   titles.slice(0, 10).forEach((title, index) => {
-    partOne += `${index + 1}. [**${title.text}**](${title.link})\n\n`;
+    partOne += `${index + 1}. [${title.text}](${title.link})\n\n`;
   });
 
   titles.slice(10, 20).forEach((title, index) => {
-    partTwo += `${index + 11}. [**${title.text}**](${title.link})\n\n`;
+    partTwo += `${index + 11}. [${title.text}](${title.link})\n\n`;
   });
 
   titles.slice(20, titles.length).forEach((title, index) => {
-    partThree += `${index + 21}. [**${title.text}**](${title.link})\n\n`;
+    partThree += `${index + 21}. [${title.text}](${title.link})\n\n`;
   });
 
   return {

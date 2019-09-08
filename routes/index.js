@@ -104,7 +104,7 @@ const steam_deals = async (req, res, client) => {
         new RichEmbed()
           .setColor(`#008000`)
           .setFooter(footer)
-          .setThumbnail(thumbnail)
+          .setImage(thumbnail)
           .setDescription(description)
       );
     });

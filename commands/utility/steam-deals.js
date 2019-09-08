@@ -138,7 +138,7 @@ const render = ({
   const embedResult = [];
 
   titles.forEach((_title, i) => {
-    const description = `[**${_title}**](${shopLinks[i]})\n${tags[i]}\n~~${realPrices[i]}~~\n**${discountedPrices[i]}** (${percentageDiscounts[i]})`;
+    const description = `[${_title}](${shopLinks[i]})\n${tags[i]}\n~~${realPrices[i]}~~\n**${discountedPrices[i]}** (${percentageDiscounts[i]})`;
     const footer = `[Deal Rating: ${ratingBadges[i]}/10]`;
 
     embedResult.push({
@@ -172,7 +172,7 @@ module.exports = {
         new RichEmbed()
           .setColor(`#008000`)
           .setFooter(footer)
-          .setThumbnail(thumbnail)
+          .setImage(thumbnail)
           .setDescription(description)
       );
     });
