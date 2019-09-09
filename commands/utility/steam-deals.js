@@ -103,8 +103,8 @@ const runner = () =>
         shopLinks.push(`https://gg.deals${shopLinkSource}`);
       });
 
-      const howManyFreshDeals = timeagos.filter(
-        (value, index) => (value || "").includes("h ago") || value === "1d ago"
+      const howManyFreshDeals = timeagos.filter((value, index) =>
+        (value || "").includes("h ago")
       );
       const getFreshDeals = arr => arr.slice(0, howManyFreshDeals.length);
 
