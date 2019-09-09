@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 const fetch = require("node-fetch");
-const { runner, name } = require("../../../commands/fun/anime");
+const { runner, name } = require("../../../commands/utility/random-anime");
 const { JEST_TIMEOUT, isJpg } = require("../../../utils");
 
 jest.setTimeout(JEST_TIMEOUT);

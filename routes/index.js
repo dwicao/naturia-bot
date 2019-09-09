@@ -25,6 +25,11 @@ const {
 } = require("../commands/utility/steam-deals");
 
 const {
+  runner: randomAnimeRunner,
+  render: randomAnimeRender
+} = require("../commands/utility/random-anime");
+
+const {
   WOTD_CHANNEL_ID,
   WOTD_KEY,
   HN_CHANNEL_ID,
@@ -32,7 +37,9 @@ const {
   JT_CHANNEL_ID,
   JT_KEY,
   SD_CHANNEL_ID,
-  SD_KEY
+  SD_KEY,
+  RA_CHANNEL_ID,
+  RA_KEY
 } = process.env;
 
 const root = (req, res) => {
@@ -146,6 +153,30 @@ const wotd = async (req, res, client) => {
   }
 };
 
+const random_anime = async (req, res, client) => {
+  if (req.query.key === RA_KEY) {
+    const animeInfo = await randomAnimeRunner();
+
+    return client.channels
+      .get(RA_CHANNEL_ID)
+      .send(
+        new RichEmbed()
+          .setColor(`RANDOM`)
+          .attachFiles([animeInfo.thumbnail])
+          .setDescription(randomAnimeRender(animeInfo))
+          .setFooter(animeInfo.description)
+      )
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch(() => {
+        res.sendStatus(500);
+      });
+  } else {
+    res.sendStatus(400);
+  }
+};
+
 const hn = async (req, res, client) => {
   if (req.query.key === HN_KEY) {
     const titles = await hnRunner();
@@ -185,5 +216,6 @@ module.exports = {
   joke,
   javascript_trending,
   steam_deals,
+  random_anime,
   doraemon
 };
