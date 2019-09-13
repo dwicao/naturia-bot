@@ -25,8 +25,11 @@ const runner = () =>
       const duration = parseInt(text.match(/\d+/)[0], 10);
 
       const isMinutes = text.toLowerCase().includes("minutes");
+      const isHours = text.toLowerCase().includes("hours");
+      const isDays = text.toLowerCase().includes("days");
 
-      const ready = duration > 120 && isMinutes;
+      const ready =
+        isDays || (duration >= 2 && isHours) || (duration >= 120 && isMinutes);
 
       if (error) {
         reject(error);
@@ -36,19 +39,23 @@ const runner = () =>
     });
   });
 
+const render = ({ text, ready }) => {
+  const readyMsg = `Server bump is available, please type \`!d bump\` in chat`;
+  const status = `This server was ${text.toLowerCase()}`;
+  return ready ? readyMsg : status;
+};
+
 module.exports = {
   runner,
+  render,
   name: "disboard-status",
   description: "Get the status from Disboard if this server can be bumped",
   aliases: ["ds"],
   async execute(message, args) {
     const { text, ready } = await runner();
-    const readyMsg = `Server bump is available, please type \`!d bump\` in chat`;
-    const status = `This server was ${text.toLowerCase()}`;
-    const result = ready ? readyMsg : status;
 
     if (text) {
-      return message.channel.send(result);
+      return message.channel.send(render({ text, ready }));
     }
 
     return sendErrorMessage(message);

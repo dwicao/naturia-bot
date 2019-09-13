@@ -30,6 +30,11 @@ const {
 } = require("../commands/utility/random-anime");
 
 const {
+  runner: disboardStatusRunner,
+  render: disboardStatusRender
+} = require("../commands/utility/disboard-status");
+
+const {
   WOTD_CHANNEL_ID,
   WOTD_KEY,
   HN_CHANNEL_ID,
@@ -39,7 +44,9 @@ const {
   SD_CHANNEL_ID,
   SD_KEY,
   RA_CHANNEL_ID,
-  RA_KEY
+  RA_KEY,
+  DS_CHANNEL_ID,
+  DS_KEY
 } = process.env;
 
 const root = (req, res) => {
@@ -209,6 +216,28 @@ const hn = async (req, res, client) => {
   }
 };
 
+const disboard_status = async (req, res, client) => {
+  if (req.query.key === DS_KEY) {
+    const { text, ready } = await disboardStatusRunner();
+
+    if (ready) {
+      return client.channels
+        .get(DS_CHANNEL_ID)
+        .send(disboardStatusRender({ text, ready }))
+        .then(() => {
+          res.sendStatus(200);
+        })
+        .catch(() => {
+          res.sendStatus(500);
+        });
+    } else {
+      res.sendStatus(200);
+    }
+  } else {
+    res.sendStatus(400);
+  }
+};
+
 module.exports = {
   root,
   wotd,
@@ -217,5 +246,6 @@ module.exports = {
   javascript_trending,
   steam_deals,
   random_anime,
+  disboard_status,
   doraemon
 };
