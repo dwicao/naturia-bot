@@ -1,9 +1,11 @@
 const path = require("path");
 const fs = require("fs");
+const request = require("request");
 const UserAgent = require("user-agents");
+const snek = require("node-superfetch");
+
 const IS_PROD = process.env.ENV === "production";
 const ERROR_MESSAGE = ":x: Error: Couldn't get the data! Please Try Again";
-const snek = require("node-superfetch");
 
 class ProgressText {
   constructor() {
@@ -27,6 +29,35 @@ class ProgressText {
     return `Loading data... (${this.current} out of ${this.total})`;
   }
 }
+
+const download = (url, dest, cb) => {
+  const file = fs.createWriteStream(dest);
+  const sendReq = request.get(url);
+
+  // verify response code
+  sendReq.on("response", response => {
+    if (response.statusCode !== 200) {
+      return cb(`Response status was ${response.statusCode}`);
+    }
+
+    sendReq.pipe(file);
+  });
+
+  // close() is async, call cb after close completes
+  file.on("finish", () => file.close(cb));
+
+  // check for request errors
+  sendReq.on("error", err => {
+    fs.unlink(dest);
+    return cb(err.message);
+  });
+
+  file.on("error", err => {
+    // Handle errors
+    fs.unlink(dest); // Delete the file async. (But we don't check the result)
+    return cb(err.message);
+  });
+};
 
 const setActivity = client => {
   if (IS_PROD) {
@@ -74,19 +105,71 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const getRandomProxy = () => {
+const getRandomProxy = url => {
   return new Promise((resolve, reject) => {
-    fs.readFile(`${getRootDir()}/public/proxy.txt`, "utf8", (err, data) => {
-      const splittedData = data.toString().split("\n");
+    fs.readFile(
+      `${getRootDir()}/public/huge-proxy.txt`,
+      "utf8",
+      (err, data) => {
+        const splittedData = data.split("\n");
+        const randomProxy =
+          splittedData[getRandomInt(0, splittedData.length - 1)];
+        const ipAddress = randomProxy.substr(0, randomProxy.indexOf(":"));
+        const port = parseInt(
+          randomProxy.substr(randomProxy.indexOf(":") + 1, randomProxy.length),
+          10
+        );
+        const proxy = {
+          ipAddress,
+          port,
+          protocol: "http"
+        };
 
-      if (err) {
-        console.error(err);
+        if (err) {
+          console.error(err);
+          reject("Error while reading the proxy");
+        }
 
-        resolve(splittedData[0]);
+        const options = {
+          url: url ? url : "https://www.google.com",
+          proxy: `http://${randomProxy}`,
+          timeout: 3000
+        };
+
+        let succeed = false;
+
+        const getGoodProxy = () => {
+          if (succeed) return;
+
+          request(options, (error, response, htmlData) => {
+            if (error || !htmlData) {
+              getGoodProxy();
+              succeed = true;
+            }
+
+            if (htmlData && htmlData.length) {
+              resolve(randomProxy);
+            }
+          });
+        };
+
+        getGoodProxy();
       }
+    );
+  });
+};
 
-      resolve(splittedData[getRandomInt(0, splittedData.length - 1)]);
-    });
+const downloadAndGetRandomProxy = url => {
+  return new Promise((resolve, reject) => {
+    download(
+      "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=10000&country=all&ssl=all&anonymity=all",
+      `${getRootDir()}/public/huge-proxy.txt`,
+      () => {
+        getRandomProxy(url)
+          .then(data => resolve(data))
+          .catch(err => reject(err));
+      }
+    );
   });
 };
 
@@ -229,6 +312,8 @@ module.exports = {
   isJpg,
   isPng,
   isSvg,
+  download,
+  downloadAndGetRandomProxy,
   addHttpPrefix,
   limitString,
   promiseTimeout,

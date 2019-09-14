@@ -4,7 +4,7 @@ const {
   getUserAgent,
   getRandomInt,
   getUUID,
-  getRandomProxy,
+  downloadAndGetRandomProxy,
   ProgressText
 } = require("../../utils");
 const { prefix } = require("../../config");
@@ -28,7 +28,7 @@ module.exports = {
     const URL = "https://twitter.com/i/flow/signup";
     const URL_TWITTER_TARGET = `https://twitter.com/${args[0]}`;
 
-    const proxy = await getRandomProxy();
+    const proxy = await downloadAndGetRandomProxy(URL);
     const browser = await puppeteer.launch({
       args: [
         "--disable-gpu",
@@ -36,7 +36,8 @@ module.exports = {
         "--disable-setuid-sandbox",
         "--no-first-run",
         "--no-sandbox",
-        "--no-zygote"
+        "--no-zygote",
+        `--proxy-server=${proxy}`
       ]
     });
 
