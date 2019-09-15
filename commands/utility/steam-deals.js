@@ -161,27 +161,35 @@ module.exports = {
   async execute(message, args) {
     const result = await runner();
 
-    message.channel.send(
-      new RichEmbed()
-        .setColor(`#ff6600`)
-        .setDescription(`**STEAM Deals Today**`)
-    );
-
-    render(result).forEach(({ footer, description, thumbnail }) => {
+    if (result && result.length) {
       message.channel.send(
         new RichEmbed()
-          .setColor(`#008000`)
-          .setFooter(footer)
-          .setImage(thumbnail)
-          .setDescription(description)
+          .setColor(`#ff6600`)
+          .setDescription(`**STEAM Deals Today**`)
       );
-    });
 
-    return message.channel.send(
-      new RichEmbed()
-        .setColor(`#ff6600`)
-        .setTimestamp()
-        .setFooter(`Source: gg.deals`)
-    );
+      render(result).forEach(({ footer, description, thumbnail }) => {
+        message.channel.send(
+          new RichEmbed()
+            .setColor(`#008000`)
+            .setFooter(footer)
+            .setImage(thumbnail)
+            .setDescription(description)
+        );
+      });
+
+      return message.channel.send(
+        new RichEmbed()
+          .setColor(`#ff6600`)
+          .setTimestamp()
+          .setFooter(`Source: gg.deals`)
+      );
+    } else {
+      return message.channel.send(
+        new RichEmbed()
+          .setColor(`#ff6600`)
+          .setDescription("Unfortunately there are no deals for today :(")
+      );
+    }
   }
 };
