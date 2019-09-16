@@ -105,7 +105,7 @@ const steam_deals = async (req, res, client) => {
   if (req.query.key === SD_KEY) {
     const result = await steamDealsRunner();
 
-    if (result && result.length) {
+    if (result && result.titles && result.titles.length) {
       client.channels
         .get(SD_CHANNEL_ID)
         .send(

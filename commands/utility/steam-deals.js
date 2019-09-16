@@ -161,7 +161,7 @@ module.exports = {
   async execute(message, args) {
     const result = await runner();
 
-    if (result && result.length) {
+    if (result && result.titles && result.titles.length) {
       message.channel.send(
         new RichEmbed()
           .setColor(`#ff6600`)
