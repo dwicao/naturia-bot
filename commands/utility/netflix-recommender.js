@@ -49,7 +49,7 @@ const render = ({ released_on, genres, imdb_rating, runtime, overview }) => {
 
   return `${year}\nIMDB: ${imdb_rating}/10\n${runtime} minutes\n${genres_result}\n\n${limitString(
     overview,
-    1920
+    1800
   )}`;
 };
 

@@ -35,6 +35,11 @@ const {
 } = require("../commands/utility/disboard-status");
 
 const {
+  runner: netflixRecommenderRunner,
+  render: netflixRecommenderRender
+} = require("../commands/utility/netflix-recommender");
+
+const {
   WOTD_CHANNEL_ID,
   WOTD_KEY,
   HN_CHANNEL_ID,
@@ -45,6 +50,8 @@ const {
   SD_KEY,
   RA_CHANNEL_ID,
   RA_KEY,
+  NR_CHANNEL_ID,
+  NR_KEY,
   DS_CHANNEL_ID,
   DS_KEY
 } = process.env;
@@ -200,6 +207,32 @@ const random_anime = async (req, res, client) => {
   }
 };
 
+const netflix_recommender = async (req, res, client) => {
+  if (req.query.key === NR_KEY) {
+    const jsonRes = await netflixRecommenderRunner();
+
+    const imgSrc = `https://img.reelgood.com/content/movie/${jsonRes.id}/poster-780.jpg`;
+
+    return client.channels
+      .get(NR_CHANNEL_ID)
+      .send(
+        new RichEmbed()
+          .setColor(`RANDOM`)
+          .setTitle(jsonRes.title)
+          .attachFiles([imgSrc])
+          .setDescription(netflixRecommenderRender(jsonRes))
+      )
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch(() => {
+        res.sendStatus(500);
+      });
+  } else {
+    res.sendStatus(400);
+  }
+};
+
 const hn = async (req, res, client) => {
   if (req.query.key === HN_KEY) {
     const titles = await hnRunner();
@@ -263,5 +296,6 @@ module.exports = {
   steam_deals,
   random_anime,
   disboard_status,
+  netflix_recommender,
   doraemon
 };

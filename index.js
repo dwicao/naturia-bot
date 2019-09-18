@@ -37,6 +37,9 @@ app.get("/random_anime", (req, res) => routes.random_anime(req, res, client));
 app.get("/disboard_status", (req, res) =>
   routes.disboard_status(req, res, client)
 );
+app.get("/netflix_recommender", (req, res) =>
+  routes.netflix_recommender(req, res, client)
+);
 
 app.listen(process.env.PORT);
 
