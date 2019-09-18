@@ -39,13 +39,15 @@ const genres_data = {
 const render = ({ released_on, genres, imdb_rating, runtime, overview }) => {
   const year = (released_on || "").slice(0, 4);
 
-  let genres_result = "| ";
+  let genres_temp = "";
 
   (genres || []).forEach((id, index) => {
     if (genres_data[id]) {
-      genres_result += `${genres_data[id]} | `;
+      genres_temp += `${genres_data[id]} | `;
     }
   });
+
+  const genres_result = genres_temp ? `| ${genres_temp}` : genres_temp;
 
   return `${year}\nIMDB: ${imdb_rating}/10\n${runtime} minutes\n${genres_result}\n\n${limitString(
     overview,
