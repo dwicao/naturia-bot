@@ -293,6 +293,20 @@ const codeblock = (string, code) => {
   return `\`\`\`${code}\n${string}\`\`\``;
 };
 
+const getAllContentsFromXPATH = async ({ page, type, expression }) => {
+  await page.waitForXPath(expression);
+  const elements = await page.$x(expression);
+  const result = await page.evaluate(
+    (_type, ..._elements) => {
+      return _elements.map(e => e[_type]);
+    },
+    type,
+    ...elements
+  );
+
+  return result;
+};
+
 module.exports = {
   JEST_TIMEOUT,
   ProgressText,
@@ -306,6 +320,7 @@ module.exports = {
   getUserAgent,
   getErrorMessage,
   getUUID,
+  getAllContentsFromXPATH,
   setActivity,
   sendErrorMessage,
   sendEditErrorMessage,
