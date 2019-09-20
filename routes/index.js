@@ -40,12 +40,19 @@ const {
 } = require("../commands/utility/netflix-recommender");
 
 const {
+  runner: techJobsRunner,
+  render: techJobsRender
+} = require("../commands/utility/tech-jobs");
+
+const {
   WOTD_CHANNEL_ID,
   WOTD_KEY,
   HN_CHANNEL_ID,
   HN_KEY,
   JT_CHANNEL_ID,
   JT_KEY,
+  TJ_CHANNEL_ID,
+  TJ_KEY,
   SD_CHANNEL_ID,
   SD_KEY,
   RA_CHANNEL_ID,
@@ -96,6 +103,40 @@ const javascript_trending = async (req, res, client) => {
           .setColor(`#ff6600`)
           .setTimestamp()
           .setFooter(`Source: Github Trending`)
+      )
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch(() => {
+        res.sendStatus(500);
+      });
+  } else {
+    res.sendStatus(400);
+  }
+};
+
+const tech_jobs = async (req, res, client) => {
+  if (req.query.key === TJ_KEY) {
+    const result = await techJobsRunner();
+
+    techJobsRender(result).forEach(({ description, longago }, i) => {
+      if ((longago || "").includes("h ago")) {
+        client.channels.get(TJ_CHANNEL_ID).send(
+          new RichEmbed()
+            .setColor(`#008000`)
+            .setThumbnail(result.logo_sources[i])
+            .setDescription(description)
+        );
+      }
+    });
+
+    return client.channels
+      .get(TJ_CHANNEL_ID)
+      .send(
+        new RichEmbed()
+          .setColor(`#ff6600`)
+          .setTimestamp()
+          .setFooter(`Source: Tech In Asia`)
       )
       .then(() => {
         res.sendStatus(200);
@@ -293,6 +334,7 @@ module.exports = {
   hn,
   joke,
   javascript_trending,
+  tech_jobs,
   steam_deals,
   random_anime,
   disboard_status,
