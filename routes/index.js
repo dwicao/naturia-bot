@@ -5,6 +5,7 @@ const javascript_trending = require("./javascript_trending");
 const tech_jobs = require("./tech_jobs");
 const steam_deals = require("./steam_deals");
 const random_anime = require("./random_anime");
+const random_pfp = require("./random_pfp");
 const disboard_status = require("./disboard_status");
 const netflix_recommender = require("./netflix_recommender");
 const doraemon = require("./doraemon");
@@ -22,6 +23,7 @@ module.exports = {
   tech_jobs,
   steam_deals,
   random_anime,
+  random_pfp,
   disboard_status,
   netflix_recommender,
   doraemon
