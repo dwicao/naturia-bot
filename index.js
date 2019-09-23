@@ -36,6 +36,7 @@ app.get("/steam_deals", (req, res) => routes.steam_deals(req, res, client));
 app.get("/random_anime", (req, res) => routes.random_anime(req, res, client));
 app.get("/random_anime", (req, res) => routes.random_anime(req, res, client));
 app.get("/random_pfp", (req, res) => routes.random_pfp(req, res, client));
+app.get("/premium_users", (req, res) => routes.premium_users(req, res, client));
 app.get("/disboard_status", (req, res) =>
   routes.disboard_status(req, res, client)
 );

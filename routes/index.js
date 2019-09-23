@@ -9,6 +9,7 @@ const random_pfp = require("./random_pfp");
 const disboard_status = require("./disboard_status");
 const netflix_recommender = require("./netflix_recommender");
 const doraemon = require("./doraemon");
+const premium_users = require("./premium_users");
 
 const root = (req, res) => {
   res.render("index");
@@ -26,5 +27,6 @@ module.exports = {
   random_pfp,
   disboard_status,
   netflix_recommender,
-  doraemon
+  doraemon,
+  premium_users
 };
