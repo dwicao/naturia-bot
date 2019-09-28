@@ -29,19 +29,19 @@ const checkCredentials = async (
   { browser, credentials, message, msg },
   index = 0
 ) => {
-  msg.edit(`Checking... (${index + 1}/${credentials.length})`);
-
   try {
-    const URL = "https://accounts.spotify.com/en/login";
-    const email = credentials[index].substring(
-      0,
-      credentials[index].indexOf(":")
-    );
-    const password = credentials[index].substring(
-      credentials[index].indexOf(":") + 1
-    );
-
     if (index < credentials.length) {
+      const URL = "https://accounts.spotify.com/en/login";
+      const email = credentials[index].substring(
+        0,
+        credentials[index].indexOf(":")
+      );
+      const password = credentials[index].substring(
+        credentials[index].indexOf(":") + 1
+      );
+
+      msg.edit(`Checking... (${index + 1}/${credentials.length})`);
+
       const page = await browser.newPage();
 
       await page.setUserAgent(getUserAgent());
