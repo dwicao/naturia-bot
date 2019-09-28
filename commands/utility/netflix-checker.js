@@ -3,18 +3,19 @@ const { RichEmbed } = require("discord.js");
 const puppeteer = require("puppeteer");
 const fetch = require("node-fetch");
 const {
-  getRootDir,
   getUserAgent,
   getRandomInt,
   downloadAndGetRandomProxy
 } = require("../../utils");
 const { prefix } = require("../../config");
+const { runner: proxyRunner } = require("./proxy");
 
 const document = {};
 const URL = "https://www.netflix.com/login";
 
 const getPuppeteerOptions = async url => {
-  const proxy = await downloadAndGetRandomProxy(url);
+  const { ipAndPort } = await proxyRunner();
+  const proxy = `${ipAndPort[getRandomInt(0, ipAndPort.length)]}`;
 
   return {
     args: [
