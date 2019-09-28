@@ -27,7 +27,7 @@ const getCredentials = url => fetch(url).then(res => res.text());
 
 const checkCredentials = async (
   { browser, credentials, message, msg },
-  index = 0
+  index
 ) => {
   try {
     if (index < credentials.length) {
@@ -99,9 +99,11 @@ module.exports = {
   name: "netflix-checker",
   aliases: ["nc"],
   description: "Check spotify accounts from a list",
-  usage: `http://example.com/file.txt`,
+  args: true,
+  usage: `http://example.com/file.txt 12`,
   devOnly: true,
   async execute(message, args) {
+    const initialIndex = parseInt(args[1], 10) || 0;
     const textResult = await getCredentials(args[0]);
     const credentials = textResult
       .split("\n")
@@ -113,12 +115,15 @@ module.exports = {
     const browser = await puppeteer.launch(puppeteerOptions);
 
     return message.channel.send("Please wait...").then(async msg => {
-      await checkCredentials({
-        browser,
-        credentials,
-        message,
-        msg
-      });
+      await checkCredentials(
+        {
+          browser,
+          credentials,
+          message,
+          msg
+        },
+        initialIndex
+      );
     });
   }
 };
