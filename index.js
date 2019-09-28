@@ -24,6 +24,7 @@ for (const filePath of commandFiles) {
 app.set("view engine", "ejs");
 
 app.get("/", routes.root);
+app.get("/public_file", routes.public_file);
 app.get("/wotd", (req, res) => routes.wotd(req, res, client));
 app.get("/hn", (req, res) => routes.hn(req, res, client));
 app.get("/doraemon", routes.doraemon);

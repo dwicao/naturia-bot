@@ -10,6 +10,7 @@ const disboard_status = require("./disboard_status");
 const netflix_recommender = require("./netflix_recommender");
 const doraemon = require("./doraemon");
 const premium_users = require("./premium_users");
+const public_file = require("./public_file");
 
 const root = (req, res) => {
   res.render("index");
@@ -17,6 +18,7 @@ const root = (req, res) => {
 
 module.exports = {
   root,
+  public_file,
   wotd,
   hn,
   joke,
