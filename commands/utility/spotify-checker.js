@@ -83,6 +83,7 @@ const checkCredentials = async (
           .setDescription(`${email}:${password}`);
 
         message.channel.send(embed);
+        await browser.close();
         const newBrowser = await puppeteer.launch(puppeteerOptions);
         checkCredentials(
           { browser: newBrowser, credentials, message, msg },
