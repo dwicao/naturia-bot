@@ -25,6 +25,8 @@ const puppeteerOptions = {
 
 const getCredentials = url => fetch(url).then(res => res.text());
 
+let error_count = 0;
+
 const checkCredentials = async (
   { browser, credentials, message, msg },
   index
@@ -40,7 +42,11 @@ const checkCredentials = async (
         credentials[index].indexOf(":") + 1
       );
 
-      msg.edit(`Checking... (${index + 1}/${credentials.length}) ${email}`);
+      msg.edit(
+        `Checking... (${index + 1}/${
+          credentials.length
+        })\nErrors: ${error_count}`
+      );
 
       const page = await browser.newPage();
 
@@ -86,6 +92,7 @@ const checkCredentials = async (
       }
     }
   } catch (err) {
+    error_count++;
     await browser.close();
     const newBrowser = await puppeteer.launch(puppeteerOptions);
     checkCredentials(
