@@ -11,6 +11,7 @@ const {
 const { prefix } = require("../../config");
 
 const document = {};
+const URL = "https://www.netflix.com/login";
 
 const getPuppeteerOptions = async url => {
   const proxy = await downloadAndGetRandomProxy(url);
@@ -40,7 +41,6 @@ const checkCredentials = async (
 ) => {
   try {
     if (index < (maxIndex || credentials.length)) {
-      const URL = "https://www.netflix.com/login";
       const email = credentials[index].substring(
         0,
         credentials[index].indexOf(":")
