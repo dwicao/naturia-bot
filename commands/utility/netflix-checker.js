@@ -107,7 +107,7 @@ const checkCredentials = async ({
     // eslint-disable-next-line require-atomic-updates
     error_message = err;
     await browser.close();
-    const puppeteerOptions = await getPuppeteerOptions();
+    const puppeteerOptions = await getPuppeteerOptions(puppeteerParams);
     const newBrowser = await puppeteer.launch(puppeteerOptions);
     checkCredentials({
       browser: newBrowser,
