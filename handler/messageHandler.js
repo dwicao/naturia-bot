@@ -29,13 +29,8 @@ module.exports = (client, message) => {
     console.log("Restarting...");
     message.channel
       .send("Restarting...")
-      .then(() => message.delete(10000))
-      .then(() => client.destroy())
-      .then(() => client.login(TOKEN))
       .then(() => {
-        console.log(`Logged in as ${client.user.tag}!`);
-        console.log("Ready!");
-        message.channel.send(`Restarted succesfully!`);
+        process.exit(1);
       })
       .catch(console.error);
   };
