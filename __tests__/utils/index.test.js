@@ -4,7 +4,7 @@ const {
   getPath,
   getRootDir,
   getRandomInt,
-  getRandomProxy,
+  getRandomHugeProxy,
   getHeaders,
   addHttpPrefix,
   limitString,
@@ -36,11 +36,11 @@ describe("Utils function", () => {
     expect(result).not.toBe(result2);
   });
 
-  test(`'getRandomProxy()' return value correctly`, async () => {
+  test(`'getRandomHugeProxy()' return value correctly`, async () => {
     const IP_AND_PORT_PATTERN = /^([a-z0-9-]+\.)+[a-z0-9]+:[1-9][0-9]+$/i;
 
-    const proxy = await getRandomProxy();
-    const proxy2 = await getRandomProxy();
+    const proxy = await getRandomHugeProxy();
+    const proxy2 = await getRandomHugeProxy();
 
     expect(proxy).toMatch(IP_AND_PORT_PATTERN);
     expect(proxy).not.toBe(proxy2);

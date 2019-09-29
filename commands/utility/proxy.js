@@ -2,18 +2,12 @@ const fs = require("fs");
 const request = require("request");
 const cheerio = require("cheerio");
 const { RichEmbed } = require("discord.js");
-const {
-  toMatrix,
-  getRootDir,
-  getHeaders,
-  sendErrorMessage
-} = require("../../utils");
+const { toMatrix, sendErrorMessage } = require("../../utils");
 
 const runner = () =>
   new Promise((resolve, reject) => {
     const reqOptions = {
-      url: "https://www.sslproxies.org",
-      headers: getHeaders()
+      url: "https://www.sslproxies.org"
     };
 
     request(reqOptions, (error, response, data) => {
@@ -68,11 +62,6 @@ const runner = () =>
       ip.forEach((item, index) => {
         ipAndPort.push(`${item}:${port[index]}`);
       });
-
-      const file = fs.createWriteStream(`${getRootDir()}/public/proxy.txt`);
-      file.on("error", console.error);
-      ipAndPort.forEach(value => file.write(`${value}\n`));
-      file.end();
 
       resolve({ ipAndPort, content });
     });

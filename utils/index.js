@@ -3,6 +3,7 @@ const fs = require("fs");
 const request = require("request");
 const UserAgent = require("user-agents");
 const snek = require("node-superfetch");
+const cheerio = require("cheerio");
 
 const IS_PROD = process.env.ENV === "production";
 const ERROR_MESSAGE = ":x: Error: Couldn't get the data! Please Try Again";
@@ -105,7 +106,107 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const getRandomProxy = url => {
+const getSSLProxies = () =>
+  new Promise((resolve, reject) => {
+    const reqOptions = {
+      url: "https://www.sslproxies.org"
+    };
+
+    request(reqOptions, (error, response, data) => {
+      if (error) {
+        reject(error);
+      }
+
+      const $ = cheerio.load(data);
+
+      const tempData = [];
+
+      $("#proxylisttable td").each((i, elem) => {
+        tempData.push($(elem).text());
+      });
+
+      const matrixedData = toMatrix(tempData, 8);
+
+      const LIMIT = 20;
+      let content = "";
+      let count = 0;
+
+      matrixedData.forEach(element => {
+        count++;
+        element.forEach((elem, index) => {
+          if (count < LIMIT) {
+            const IS_IP_AND_PORT = index === 0 || index === 1;
+            const IS_COUNTRY = index === 3;
+
+            if (IS_IP_AND_PORT) {
+              content += `${elem} `;
+            }
+
+            if (IS_COUNTRY) {
+              content += `${elem}\n`;
+            }
+          }
+        });
+      });
+
+      const ip = [];
+      const port = [];
+
+      tempData.forEach((item, index) => {
+        if (index % 8 === 0) {
+          ip.push(item);
+          port.push(tempData[index + 1]);
+        }
+      });
+
+      const ipAndPort = [];
+
+      ip.forEach((item, index) => {
+        ipAndPort.push(`${item}:${port[index]}`);
+      });
+
+      resolve({ ipAndPort });
+    });
+  });
+
+const getRandomProxy = async url => {
+  const { ipAndPort } = await getSSLProxies();
+  const randomProxy = ipAndPort[getRandomInt(0, ipAndPort.length - 1)];
+  const ipAddress = randomProxy.substr(0, randomProxy.indexOf(":"));
+  const port = parseInt(
+    randomProxy.substr(randomProxy.indexOf(":") + 1, randomProxy.length),
+    10
+  );
+
+  const options = {
+    url: url ? url : "https://www.google.com",
+    proxy: `http://${randomProxy}`,
+    timeout: 3000
+  };
+
+  let succeed = false;
+
+  return new Promise((resolve, reject) => {
+    const getGoodProxy = () => {
+      if (succeed) return;
+
+      request(options, (error, response, htmlData) => {
+        if (error || !htmlData) {
+          getGoodProxy();
+          succeed = true;
+        }
+
+        if (htmlData && htmlData.length) {
+          resolve(randomProxy);
+        }
+      });
+    };
+
+    getGoodProxy();
+  });
+};
+
+const getRandomHugeProxy = url => {
   return new Promise((resolve, reject) => {
     fs.readFile(
       `${getRootDir()}/public/huge-proxy.txt`,
@@ -159,18 +260,47 @@ const getRandomProxy = url => {
   });
 };
 
-const downloadAndGetRandomProxy = url => {
+const downloadAndgetRandomHugeProxy = url => {
   return new Promise((resolve, reject) => {
     download(
       "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=10000&country=all&ssl=all&anonymity=all",
       `${getRootDir()}/public/huge-proxy.txt`,
       () => {
-        getRandomProxy(url)
+        getRandomHugeProxy(url)
           .then(data => resolve(data))
           .catch(err => reject(err));
       }
     );
   });
+};
+
+const getPuppeteerOptions = async url => {
+  if (url) {
+    const proxyServer = await getRandomProxy(url);
+
+    return {
+      args: [
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--disable-setuid-sandbox",
+        "--no-first-run",
+        "--no-sandbox",
+        "--no-zygote",
+        `--proxy-server=${proxyServer}`
+      ]
+    };
+  }
+
+  return {
+    args: [
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+      "--disable-setuid-sandbox",
+      "--no-first-run",
+      "--no-sandbox",
+      "--no-zygote"
+    ]
+  };
 };
 
 const getHeaders = () => {
@@ -314,6 +444,8 @@ module.exports = {
   getRootDir,
   getRandomInt,
   getRandomProxy,
+  getRandomHugeProxy,
+  getPuppeteerOptions,
   getLoadingMessage,
   getParameterByName,
   getHeaders,
@@ -328,7 +460,7 @@ module.exports = {
   isPng,
   isSvg,
   download,
-  downloadAndGetRandomProxy,
+  downloadAndgetRandomHugeProxy,
   addHttpPrefix,
   limitString,
   promiseTimeout,
