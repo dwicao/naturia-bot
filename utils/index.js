@@ -275,8 +275,7 @@ const getPuppeteerOptions = async url => {
             "--no-sandbox",
             "--no-zygote",
             `--proxy-server=${proxyServer}`
-          ],
-          headless: false
+          ]
         };
       }
     } catch (err) {
