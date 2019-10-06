@@ -4,6 +4,7 @@ const request = require("request");
 const UserAgent = require("user-agents");
 const snek = require("node-superfetch");
 const cheerio = require("cheerio");
+const fetch = require("node-fetch");
 
 const IS_PROD = process.env.ENV === "production";
 const ERROR_MESSAGE = ":x: Error: Couldn't get the data! Please Try Again";
@@ -207,100 +208,68 @@ const getRandomProxy = async url => {
 };
 
 const getRandomHugeProxy = url => {
+  const getGoodProxy = (resolve, splittedData) => {
+    const randomProxy = (splittedData || [])[
+      getRandomInt(0, (splittedData || []).length - 1)
+    ];
+
+    const options = {
+      url: url ? url : "https://www.google.com",
+      proxy: `http://${randomProxy}`,
+      timeout: 1000
+    };
+
+    request(options, (error, response, htmlData) => {
+      if (error || !htmlData) {
+        getGoodProxy(resolve, splittedData);
+      }
+
+      if (htmlData && htmlData.length) {
+        resolve(randomProxy);
+      }
+    });
+  };
+
   return new Promise((resolve, reject) => {
-    fs.readFile(
-      `${getRootDir()}/public/huge-proxy.txt`,
-      "utf8",
-      (err, data) => {
+    const proxiesList =
+      "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=1000&country=all&ssl=yes&anonymity=all";
+
+    fetch(proxiesList)
+      .then(res => res.text())
+      .then(data => {
         const splittedData = data.split("\n");
-        const randomProxy =
-          splittedData[getRandomInt(0, splittedData.length - 1)];
-        const ipAddress = randomProxy.substr(0, randomProxy.indexOf(":"));
-        const port = parseInt(
-          randomProxy.substr(randomProxy.indexOf(":") + 1, randomProxy.length),
-          10
-        );
-        const proxy = {
-          ipAddress,
-          port,
-          protocol: "http"
-        };
 
-        if (err) {
-          console.error(err);
-          reject("Error while reading the proxy");
-        }
+        getGoodProxy(resolve, splittedData);
+      })
+      .catch(err => {
+        console.log(err);
 
-        const options = {
-          url: url ? url : "https://www.google.com",
-          proxy: `http://${randomProxy}`,
-          timeout: 3000
-        };
-
-        let succeed = false;
-
-        const getGoodProxy = () => {
-          if (succeed) return;
-
-          request(options, (error, response, htmlData) => {
-            if (error || !htmlData) {
-              getGoodProxy();
-              succeed = true;
-            }
-
-            if (htmlData && htmlData.length) {
-              resolve(randomProxy);
-            }
-          });
-        };
-
-        getGoodProxy();
-      }
-    );
-  });
-};
-
-const downloadAndgetRandomHugeProxy = url => {
-  return new Promise((resolve, reject) => {
-    download(
-      "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=10000&country=all&ssl=all&anonymity=all",
-      `${getRootDir()}/public/huge-proxy.txt`,
-      () => {
-        getRandomHugeProxy(url)
-          .then(data => resolve(data))
-          .catch(err => reject(err));
-      }
-    );
+        getRandomHugeProxy(url);
+      });
   });
 };
 
 const getPuppeteerOptions = async url => {
-  if (url) {
-    const proxyServer = await getRandomProxy(url);
+  const defaultConfig = {
+    args: ["--no-sandbox"]
+  };
 
-    return {
-      args: [
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-        "--disable-setuid-sandbox",
-        "--no-first-run",
-        "--no-sandbox",
-        "--no-zygote",
-        `--proxy-server=${proxyServer}`
-      ]
-    };
+  if (url) {
+    try {
+      const proxyServer = await getRandomHugeProxy(url);
+
+      if (proxyServer) {
+        return {
+          args: ["--no-sandbox", `--proxy-server=${proxyServer}`]
+        };
+      }
+    } catch (err) {
+      console.log(err);
+      return defaultConfig;
+    }
   }
 
-  return {
-    args: [
-      "--disable-gpu",
-      "--disable-dev-shm-usage",
-      "--disable-setuid-sandbox",
-      "--no-first-run",
-      "--no-sandbox",
-      "--no-zygote"
-    ]
-  };
+  return defaultConfig;
 };
 
 const getHeaders = () => {
@@ -460,7 +429,6 @@ module.exports = {
   isPng,
   isSvg,
   download,
-  downloadAndgetRandomHugeProxy,
   addHttpPrefix,
   limitString,
   promiseTimeout,

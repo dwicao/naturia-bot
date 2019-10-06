@@ -42,7 +42,8 @@ const checkCredentials = async ({
 
       await page.setUserAgent(getUserAgent());
       await page.goto(URL, {
-        waitUntil: "networkidle0"
+        waitUntil: "networkidle0",
+        timeout: 10000
       });
       await page.focus("input[id=id_userLoginId]");
       await page.keyboard.type(email);
