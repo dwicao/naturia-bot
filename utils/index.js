@@ -251,7 +251,14 @@ const getRandomHugeProxy = url => {
 
 const getPuppeteerOptions = async url => {
   const defaultConfig = {
-    args: ["--no-sandbox"]
+    args: [
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+      "--disable-setuid-sandbox",
+      "--no-first-run",
+      "--no-sandbox",
+      "--no-zygote"
+    ]
   };
 
   if (url) {
@@ -260,7 +267,16 @@ const getPuppeteerOptions = async url => {
 
       if (proxyServer) {
         return {
-          args: ["--no-sandbox", `--proxy-server=${proxyServer}`]
+          args: [
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-setuid-sandbox",
+            "--no-first-run",
+            "--no-sandbox",
+            "--no-zygote",
+            `--proxy-server=${proxyServer}`
+          ],
+          headless: false
         };
       }
     } catch (err) {
