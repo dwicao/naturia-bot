@@ -28,7 +28,7 @@ const runner = async () => {
   await page.goto(URL, { waitUntil: "networkidle0" });
 
   const logo_xpath =
-    "/html/body/div[1]/div/div[4]/div[2]/div[2]/div/div/div/div/div[5]/article/div/div[1]/div[1]/a/img";
+    "/html/body/div[1]/div/div[4]/div[2]/div[3]/div/div/div/div/div[5]/article/div/div[1]/div[1]/a/img";
   const logo_sources = await getAllContentsFromXPATH({
     page,
     expression: logo_xpath,
@@ -36,7 +36,7 @@ const runner = async () => {
   });
 
   const title_xpath =
-    "/html/body/div[1]/div/div[4]/div[2]/div[2]/div/div/div/div/div[5]/article/div/div[1]/div[2]/div[1]/span[1]/b/a";
+    "/html/body/div[1]/div/div[4]/div[2]/div[3]/div/div/div/div/div[5]/article/div/div[1]/div[2]/div[1]/span[1]/b/a";
   const title_texts = await getAllContentsFromXPATH({
     page,
     expression: title_xpath,
@@ -49,7 +49,7 @@ const runner = async () => {
   });
 
   const longAgo_xpath =
-    "/html/body/div[1]/div/div[4]/div[2]/div[2]/div/div/div/div/div[5]/article/div/div[2]/span";
+    "/html/body/div[1]/div/div[4]/div[2]/div[3]/div/div/div/div/div[5]/article/div/div[2]/span";
   const longAgo_texts = await getAllContentsFromXPATH({
     page,
     expression: longAgo_xpath,
@@ -57,7 +57,7 @@ const runner = async () => {
   });
 
   const company_xpath =
-    "/html/body/div[1]/div/div[4]/div[2]/div[2]/div/div/div/div/div[5]/article/div/div[1]/div[2]/div[2]/a";
+    "/html/body/div[1]/div/div[4]/div[2]/div[3]/div/div/div/div/div[5]/article/div/div[2]/span";
   const company_texts = await getAllContentsFromXPATH({
     page,
     expression: company_xpath,
@@ -70,7 +70,7 @@ const runner = async () => {
   });
 
   const location_xpath =
-    "/html/body/div[1]/div/div[4]/div[2]/div[2]/div/div/div/div/div[5]/article/div/div[1]/div[2]/div[3]";
+    "/html/body/div[1]/div/div[4]/div[2]/div[3]/div/div/div/div/div[5]/article/div/div[1]/div[2]/div[3]";
   const location_texts = await getAllContentsFromXPATH({
     page,
     expression: location_xpath,
@@ -78,7 +78,7 @@ const runner = async () => {
   });
 
   const salary_xpath =
-    "/html/body/div[1]/div/div[4]/div[2]/div[2]/div/div/div/div/div[5]/article/div/div[1]/div[2]/div[4]";
+    "/html/body/div[1]/div/div[4]/div[2]/div[3]/div/div/div/div/div[5]/article/div/div[1]/div[2]/div[4]";
   const salary_texts = await getAllContentsFromXPATH({
     page,
     expression: salary_xpath,
