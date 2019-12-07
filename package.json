@@ -21,11 +21,14 @@
     "discord.js": "^11.5.1",
     "ejs": "^2.6.2",
     "express": "^4.16.4",
+    "figlet": "^1.2.4",
     "node-fetch": "^2.6.0",
     "node-superfetch": "^0.1.9",
     "puppeteer": "^1.19.0",
+    "random-words": "^1.1.0",
     "request": "^2.88.0",
     "svg2img": "^0.6.1",
+    "text2png": "^2.3.0",
     "user-agents": "^1.0.346"
   },
   "devDependencies": {
