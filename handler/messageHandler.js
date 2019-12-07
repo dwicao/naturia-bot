@@ -2,6 +2,10 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const { prefix, botId, authorId } = require("../config");
 const { sendErrorMessage } = require("../utils");
+const {
+  variable: typingVariable,
+  winner: typingWinner
+} = require("../commands/fun/typing");
 
 const IS_PROD = process.env.ENV === "production";
 const TOKEN = IS_PROD ? process.env.TOKEN : process.env.DEV_TOKEN;
@@ -10,10 +14,22 @@ const cooldowns = new Discord.Collection();
 const no_op_promise = () => new Promise(resolve => resolve());
 
 module.exports = (client, message) => {
+  const typingAnswerValue =
+    typingVariable.getWords() && typingVariable.getWords().toLowerCase();
+  const isTypingAnswer =
+    message.channel.id === process.env.TYPING_CHANNEL_ID &&
+    message.content &&
+    message.content.toLowerCase() === typingAnswerValue;
+
+  if (isTypingAnswer) {
+    typingWinner({ message, typingVariable, answer: typingAnswerValue });
+  }
+
   if (/```(js|javascript)(.|\s)+```/gi.test(message.content))
     return require("./linterHandler.js")(message);
   if (/```(cpp)(.|\s)+```/gi.test(message.content))
     return require("./cppLinterHandler.js")(message);
+
   const correctPrefix =
     message.content.slice(0, prefix.length).toLowerCase() ===
     prefix.toLowerCase();

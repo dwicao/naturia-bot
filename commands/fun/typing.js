@@ -3,6 +3,20 @@ const figlet = require("figlet");
 const text2png = require("text2png");
 const randomWords = require("random-words");
 
+class TypingVariable {
+  constructor() {
+    this.words = "";
+  }
+
+  setWords(words) {
+    this.words = words;
+  }
+
+  getWords() {
+    return this.words;
+  }
+}
+
 const runner = () =>
   new Promise((resolve, reject) => {
     figlet.fonts((err, fonts) => {
@@ -32,15 +46,24 @@ const runner = () =>
     });
   });
 
+const winner = ({ message, typingVariable, answer }) => {
+  typingVariable.setWords("");
+  return message.reply(
+    `Correct! The answer is \`${answer}\`. You got 10 points!`
+  );
+};
+
 module.exports = {
   runner,
+  winner,
+  variable: new TypingVariable(),
   name: "typing",
   description: "Generate words for typing contest",
   devOnly: true,
   async execute(message, args) {
     const { image, words } = await runner();
 
-    return message.channel.send(words, {
+    return message.channel.send({
       files: [{ attachment: image }]
     });
   }
