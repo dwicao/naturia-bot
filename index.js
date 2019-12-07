@@ -44,7 +44,6 @@ app.get("/disboard_status", (req, res) =>
 app.get("/netflix_recommender", (req, res) =>
   routes.netflix_recommender(req, res, client)
 );
-app.get("/typing", (req, res) => routes.typing(req, res, client));
 
 app.listen(process.env.PORT);
 

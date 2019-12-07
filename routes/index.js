@@ -11,7 +11,6 @@ const netflix_recommender = require("./netflix_recommender");
 const doraemon = require("./doraemon");
 const premium_users = require("./premium_users");
 const public_file = require("./public_file");
-const typing = require("./typing");
 
 const root = (req, res) => {
   res.render("index");
@@ -31,6 +30,5 @@ module.exports = {
   disboard_status,
   netflix_recommender,
   doraemon,
-  typing,
   premium_users
 };
